@@ -1,0 +1,66 @@
+
+<div class="container mx-auto p-4 h-screen flex flex-col">
+    <shared-navbar></shared-navbar>
+    <h1 class="text-2xl text-center my-4">Listado de cotizaciones</h1>
+
+    <div class="grow overflow-y-auto ">
+
+        <p-contextmenu #contexMenu  [model]="contextMenuItems" (onShow)="onContextMenuShow()" />
+        <p-table 
+            [value]="cotizaciones" 
+            selectionMode="single"
+            [(selection)]="selectedCotizacion"
+            [(contextMenuSelection)]="selectedCotizacion"
+            [contextMenu]="contexMenu"
+            [metaKeySelection]="metaKey"
+            dataKey="id"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            [scrollable]="true" 
+            [scrollHeight]="'flex'"
+            [tableStyle]="{'min-width': '40rem'}"        
+        >
+            <ng-template #header>
+                <tr>
+                    <th pSortableColumn="id" style="width:15%">
+                        Code <p-sortIcon field="id" />
+                    </th>
+                    <th pSortableColumn="cliente" style="width:25%">
+                        Cliente <p-sortIcon field="name" />
+                    </th>
+                    <th pSortableColumn="monto" style="width:20%">
+                        Monto <p-sortIcon field="category" />
+                    </th>
+                    <th pSortableColumn="fecha" style="width:20%">
+                        Fecha <p-sortIcon field="quantity" />
+                    </th>
+                    <th pSortableColumn="estado" style="width:20%">
+                        Estado <p-sortIcon field="quantity" />
+                    </th>                
+                </tr>
+            </ng-template>
+            <ng-template #body let-cotizacion>
+                <tr 
+                    [pSelectableRow]="cotizacion"
+                    [pContextMenuRow]="cotizacion"
+                >
+                    <td>{{ cotizacion.id }}</td>
+                    <td>{{ cotizacion.cliente }}</td>
+                    <td>{{ cotizacion.monto | currency:'S/ ' }}</td>
+                    <td>{{ cotizacion.fecha | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-tag [severity]="getStatusSeverity(cotizacion.estado)" [value]="cotizacion.estado" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        
+    </div>
+
+</div>
+
+<cotizaciones-modal-detalle [visible]="modalVisibility" [cotizacion]="selectedCotizacion!" (onCloseModal)="changeModalVisibility($event)"></cotizaciones-modal-detalle>
+
+<p-confirmdialog />
+<p-toast position="bottom-center" key="listado-toast" />

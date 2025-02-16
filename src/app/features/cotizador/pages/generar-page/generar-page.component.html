@@ -1,0 +1,119 @@
+
+<div class="container h-screen flex flex-col mx-auto p-4">
+    <shared-navbar></shared-navbar>
+    
+    <h1 class="text-2xl text-center mb-4">{{cotizacion.estado !== 'Completado' ? 'Generar cotización' : 'Editar cotización'}} </h1>
+        
+    
+    <div class="flex flex-col gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="">            
+                <p-floatlabel variant="on">
+                    <input 
+                        pInputText
+                        minlength="8"
+                        maxlength="11"
+                        [(ngModel)]="cotizacion.docCliente"
+                        inputmode="numeric"                        
+                        (keypress)="validateDocCliente($event)"
+                        id="numDocCli"
+                        class="w-full"
+                        pSize="small"
+                    />                
+                    <label for="numDocCli">N° Documento</label> 
+                </p-floatlabel>
+            </div>
+            <div class="">
+                <p-floatlabel variant="on">
+                    <input 
+                        type="text"
+                        id="nomCli"
+                        pInputText 
+                        [disabled]="false"                        
+                        [(ngModel)]="cotizacion.cliente" 
+                        class="w-full"
+                        pSize="small"
+                    />              
+                    <label for="nomCli">Cliente</label>
+                </p-floatlabel>
+            </div>            
+        </div>
+        <div class="flex flex-col gap-2">
+
+            <shared-search-bar (onSelectedProduct)="onSelectProduct($event)"></shared-search-bar>
+
+        </div>                        
+    </div>
+
+    <hr class="my-4">
+    
+    <div class="flex flex-col flex-grow overflow-hidden">
+        <div class="flex-grow overflow-y-auto">
+            @if (cotizacionCartProducts.length > 0) {
+                <p class="font-semibold text-lg mb-2">Productos agregados</p>
+                <div class="space-y-2 flex flex-col gap-2">
+                    @for (product of cotizacionCartProducts; track $index) {
+                        <cotizador-card-producto 
+                            [product]="product">
+                        </cotizador-card-producto>
+                    }
+                </div>
+            }
+            @else {
+                <div class="flex justify-center items-center h-full">
+                    <p class="text-gray-500 text-center lg:text-lg">Aún no se han agregado productos.</p>
+                </div>
+            }
+        </div>
+    </div>
+                
+    <div class="mt-auto p-4 bg-white">
+        <hr class="mb-2">
+        <div class="text-end text-lg flex justify-between my-2">            
+            <p>{{cotizacionCartProducts.length}} {{cotizacionCartProducts.length | i18nPlural:productsPluralMap }}</p>
+            <p class="font-bold">Total {{ getTotalCartAmount() | currency: 'S/ ' }}</p>        
+        </div>
+        <hr class="mb-4">
+
+        <div class="grid grid-cols-2 gap-2">
+            <scanner-code
+                (onScannedProduct)="onProductScanned($event)">
+            </scanner-code>
+
+            <p-button 
+                icon="pi pi-save"
+                [disabled]="isFormInvalid().saveBtn"
+                label="Guardar"
+                styleClass="w-full"
+                severity="info"
+                (onClick)="saveToLocalStorageCotizacion()">
+            </p-button>
+
+            <div class="w-full col-span-2">
+                @if(cotizacion.estado !== 'Completado') {
+                    <p-button 
+                        icon="pi pi-send"
+                        [disabled]="isFormInvalid().sendBtn"
+                        label="Lanzar"
+                        styleClass="w-full"
+                        severity="success"
+                        (onClick)="sendToDynamics()">
+                    </p-button>
+                }
+                @else {
+                    <p-button 
+                        icon="pi pi-send"
+                        [disabled]="isFormInvalid().sendBtn"
+                        label="Editar en Dynamic"
+                        styleClass="w-full"
+                        severity="success"
+                        (onClick)="updateInDynamics()">
+                    </p-button>
+                }
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<p-toast position="bottom-center" key="toast-generate-cotizacion"/>

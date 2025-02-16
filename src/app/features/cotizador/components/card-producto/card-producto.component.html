@@ -1,0 +1,70 @@
+<p-card >
+    <div class=" ">
+        <div class="grid grid-cols-12 gap-4 items-center ">
+            <div class="col-span-3 lg:col-span-2 flex items-center justify-center">
+                <img
+                    [src]="'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'"
+                    [alt]="product.description"
+                    class="w-32 rounded "
+                />
+            </div>
+
+            <div class="col-span-9 lg:col-span-10 grid grid-cols-12 gap-2 items-center">
+                <div class="col-span-9">
+                    <div class="mb-2">
+                        <p class="text-wrap mr-3">{{product.description}}</p>
+                        <p class="text-sm mr-3">Código {{product.code}}</p>
+                    </div>    
+    
+                    <div class="w-28">
+                        <p-inputnumber 
+                            [(ngModel)]="product.unitPrice"
+                            [min]="0.1" 
+                            inputId="currency-pe" 
+                            mode="currency" 
+                            currency="PEN" 
+                            locale="es-PE"
+                            [required]="true"
+                            fluid="true" 
+                            [style]="{width: '3rem'}"
+                            (ngModelChange)="updateCartProduct()"
+                             />
+                    </div>
+                </div>
+
+                
+                <div class="col-span-3 flex justify-end gap-1 md:gap-4 " >
+                    
+                    <p-inputnumber 
+                        [(ngModel)]="product.cantidad" 
+                        [showButtons]="true" 
+                        buttonLayout="vertical" 
+                        spinnerMode="vertical" 
+                        inputId="vertical" 
+                        min="1"
+                        [inputStyle]="{ width: '3rem' }"
+                        (ngModelChange)="updateCartProduct()"
+                    >
+                        <ng-template pTemplate="incrementbuttonicon" >
+                            <span class="pi pi-plus"></span>
+                        </ng-template>
+                        <ng-template pTemplate="decrementbuttonicon">
+                            <span class="pi pi-minus"></span>
+                        </ng-template>
+                    </p-inputnumber>  
+
+                    <button (click)="removeProduct()" >
+                        <span class="pi pi-trash text-red-600 hover:opacity-70  border border-transparent rounded-xl text-xl"></span>
+                    </button>
+
+                </div>
+            </div>
+
+            
+        </div>
+
+        
+
+        
+    </div>
+</p-card>

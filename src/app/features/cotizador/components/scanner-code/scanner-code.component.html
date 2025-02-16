@@ -1,0 +1,56 @@
+<p-button 
+    icon="pi pi-barcode"   
+    label="Escanear" 
+    (onClick)="changeModalVisibiliy()" 
+    styleClass="w-full"
+/>
+
+<p-dialog 
+    header="Escanear producto" 
+    [modal]="true" 
+    [(visible)]="modalVisibiliy" 
+    closable="false" 
+    id="scanner-modal"  
+    [style]="{ width: '35rem' }"
+    [breakpoints]="{ '800px': '25rem', '500px': '24rem' }"
+>    
+    
+    <div>
+        <p class="mb-2 leading-5">Enfoca el código QR o código de barras del producto para escanearlo.</p>
+        
+        <div class="corner-borders m-2 text-red-600 ">
+            <div class="relative w-full max-w-md mx-auto min-h-28 md:min-h-40">
+                @if(scanner?.isLoading) {
+                    <div class="text-center absolute flex justify-center items-center w-full h-full">
+                        <p-progress-spinner 
+                           ariaLabel="loading"
+                           strokeWidth="5" 
+                           [style]="{ width: '40px', height: '40px' }"
+                           styleClass="top-3" />
+                    </div>
+               }
+
+               <div [ngClass]="{ hidden : scanner?.isLoading}" class="">
+                    <ngx-scanner-qrcode #action="scanner" (event)="onValueScanned($event)" [config]="scannerConfig" ></ngx-scanner-qrcode>
+                    <div class="absolute inset-0 qr-scanner-overlay">
+                        <div class="qr-scanner-corner top-left"></div>
+                        <div class="qr-scanner-corner top-right"></div>
+                        <div class="qr-scanner-corner bottom-left"></div>
+                        <div class="qr-scanner-corner bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+
+    </div>
+
+    <div class="flex justify-end gap-2 mt-6">
+        <p-button label="Cerrar" severity="secondary" (click)="changeModalVisibiliy()" [disabled]="scanner?.isLoading" />
+    </div>
+</p-dialog>
+
+<p-toast position="bottom-center" key="toast-scanner"/>
+
+
+    

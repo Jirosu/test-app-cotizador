@@ -1,0 +1,52 @@
+<p-menubar>
+    <ng-template #start>
+        <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="logo" style="width: 60px;">
+    </ng-template>
+
+    <ng-template #end>
+        <p-button (click)="visible = true" icon="pi pi-bars" variant="outlined" severity="contrast" styleClass="border-0 pb-4"/>
+    </ng-template>
+</p-menubar>
+
+
+<p-drawer  [(visible)]="visible" [header]="'user cod'" position="right">
+    <ng-template #content>
+        <div class="text-lg">
+            <span class="font-medium">Cotizador</span>
+        </div>
+        <ul class="list-none p-0 m-0 overflow-hidden">
+            <li
+                routerLink="/cotizador/listado"
+                routerLinkActive="bg-surface-200 rounded-md"
+                (click)="visible = false"
+            >
+                <a pRipple class="flex items-center cursor-pointer p-4 rounded-border text-surface-700 hover:bg-surface-100 duration-150 transition-colors p-ripple">
+                    <i class="pi pi-list mr-2"></i>
+                    <span class="font-medium">Listado</span>
+                </a>
+            </li>
+
+            <li
+                routerLink="/cotizador/generar"
+                routerLinkActive="bg-surface-200 rounded-md"
+                (click)="visible = false"
+            >
+                <a pRipple class="flex items-center cursor-pointer p-4 rounded-border text-surface-700 hover:bg-surface-100 duration-150 transition-colors p-ripple">
+                    <i class="pi pi-pen-to-square mr-2"></i>
+                    <span class="font-medium">Generar</span>
+                </a>
+            </li>
+        </ul>
+    </ng-template>
+
+    <ng-template #footer>
+        <div (click)="logout()" class="border-t border-zinc-400">
+            <a pRipple class="flex items-center cursor-pointer p-4 rounded-border text-red-600 hover:bg-surface-100 duration-150 transition-colors p-ripple">
+                <i class="pi pi-sign-out mr-2"></i>
+                <span class="font-medium">Cerrar Sesión</span>
+            </a>
+        </div>
+    </ng-template>
+</p-drawer>
+
+<p-toast position="bottom-center" key="toast-navbar"/>
