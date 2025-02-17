@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -33,7 +33,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
   templateUrl: './scanner-code.component.html',
   styleUrl: './scanner-code.component.css'
 })
-export class ScannerCodeComponent implements OnInit  {
+export class ScannerCodeComponent implements OnInit, AfterViewInit  {
   
   modalVisibiliy: boolean = false;
 
@@ -74,7 +74,28 @@ export class ScannerCodeComponent implements OnInit  {
 
   ngOnInit(): void {
     this.getProducts();
-    this.getSavedDivice();
+    // this.getSavedDivice();
+  }
+
+  ngAfterViewInit(): void {
+    this.scanner?.isReady.subscribe((res: any) => {
+      // this.handle(this.action, 'start');
+    });
+  }
+
+  public handle(action: any, fn: string): void {
+    // Fix issue #27, #29
+    const playDeviceFacingBack = (devices: any[]) => {
+      // front camera or back camera check here!
+      const device = devices.find(f => (/back|rear|environment/gi.test(f.label))); // Default Back Facing Camera
+      action.playDevice(device ? device.deviceId : devices[0].deviceId);
+    }
+
+    if (fn === 'start') {
+      action[fn](playDeviceFacingBack).subscribe((r: any) => console.log(fn, r), alert);
+    } else {
+      action[fn]().subscribe((r: any) => console.log(fn, r), alert);
+    }
   }
 
   getProducts() {
@@ -99,20 +120,20 @@ export class ScannerCodeComponent implements OnInit  {
   }
 
 
-  getSavedDivice() {
-    const cameraId = localStorage.getItem('scanner-divice');
+  // getSavedDivice() {
+  //   const cameraId = localStorage.getItem('scanner-divice');
 
-    if(cameraId === null) {
-      return;
-    }
+  //   if(cameraId === null) {
+  //     return;
+  //   }
 
-    this.setDiviceCamera(cameraId);
-  }
+  //   this.setDiviceCamera(cameraId);
+  // }
 
-  setDiviceCamera(cameraId: string) {    
-    this.scanner?.playDevice(cameraId);
-    localStorage.setItem('scanner-divice', cameraId);
-  }
+  // setDiviceCamera(cameraId: string) {    
+  //   this.scanner?.playDevice(cameraId);
+  //   localStorage.setItem('scanner-divice', cameraId);
+  // }
 
 
   onValueScanned(codeValue: ScannerQRCodeResult[]) {
