@@ -40,12 +40,15 @@ export class ScannerCodeComponent implements OnInit {
   scannerConfig: ScannerQRCodeConfig = {
     constraints: {
       video: {
+        width: window.innerWidth
+      }
+      // video: {
         // width: { min: 640, ideal: 1920 },
         // height: { min: 360, ideal: 1080 },
-        width: { min: 350, ideal: 350 },
-        height: { min: 200, ideal: 200 },
-        aspectRatio: { ideal: 1.7777777778 },
-      },
+        // width: { min: 350, ideal: 350 },
+        // height: { min: 200, ideal: 200 },
+        // aspectRatio: { ideal: 1.7777777778 },
+      // },
     },
     isBeep: false,
     vibrate: 300,
@@ -74,19 +77,6 @@ export class ScannerCodeComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProducts();
-
-
-    this.checkCameraPermission().then(hasPermission => {
-      if (!hasPermission) {
-        this.messageServ.add({
-          severity: 'warn',
-          summary: 'Permisos de cámara',
-          detail: 'Se requieren permisos de acceso a la cámara para utlizar el escaner.',
-          key: 'toast-scanner',
-          life: 5000
-        });
-      }
-    });
   }
 
   public handle(action: any, fn: string): void {
@@ -119,7 +109,15 @@ export class ScannerCodeComponent implements OnInit {
     if (!this.modalVisibiliy) {
       const hasPermission = await this.checkCameraPermission();
       if (!hasPermission) {
-        this.showPermissionInstructions();
+        this.messageServ.add({
+          severity: 'error',
+          summary: 'Permisos de cámara denegados',
+          detail: 'Para usar el escaner, necesita habilitar los permisos de cámara en la configuración de su navegador.',
+          key: 'toast-scanner',
+          life: 10000,
+          sticky: true,
+          closable: true
+        });
         return;
       }
     }
@@ -132,21 +130,6 @@ export class ScannerCodeComponent implements OnInit {
     }
     this.handle(this.scanner, 'start');
   }
-
-
-  showPermissionInstructions() {
-    this.messageServ.add({
-      severity: 'error',
-      summary: 'Permisos de cámara denegados',
-      detail: 'Para usar el escaner, necesita habilitar los permisos de cámara en la configuración de su navegador.',
-      key: 'toast-scanner',
-      life: 10000,
-      sticky: true,
-      closable: true
-    });
-  }
-
-
 
   getProducts() {
     this._productService.getProducts().subscribe( resp => {
