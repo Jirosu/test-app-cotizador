@@ -1,1 +1,0 @@
-import"./chunk-4CLCTAJ7.js";var t=[{path:"listado",loadComponent:()=>import("./chunk-W3NQ2V4I.js").then(o=>o.ListadoPageComponent)},{path:"generar",loadComponent:()=>import("./chunk-2MR7MWNW.js").then(o=>o.GenerarPageComponent)},{path:"**",redirectTo:"listado"}];export{t as routes};
