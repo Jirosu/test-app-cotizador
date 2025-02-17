@@ -1,18 +1,17 @@
 <p-button icon="pi pi-barcode" label="Escanear" (onClick)="changeModalVisibiliy()" styleClass="w-full" />
 
 <p-dialog header="Escanear producto" [modal]="true" [(visible)]="modalVisibiliy" closable="false" id="scanner-modal"
-    [style]="{ width: '35rem' }" [breakpoints]="{ '800px': '25rem', '500px': '24rem' }">
+    [style]="{ width: '35rem' }" [breakpoints]="{ '800px': '25rem', '500px': '24rem' }" styleClass="m-2">
 
     <div>
         <p class="mb-2 leading-5">Enfoca el código QR o código de barras del producto para escanearlo.</p>
 
         <div class="flex flex-wrap gap-2 mt-2 items-center" [ngClass]="{ hidden : scanner?.isLoading}">
-            <label for="cameraSelect">Seleccione el dispositivo: </label>
-            <!-- <p-select [options]="cameras" [(ngModel)]="selectedDeviceId" placeholder="Seleccione"
-                class="w-full md:w-56" (onChange)="onChangeCamera()" size="small" id="cameraSelect" /> -->
-                <p-select [options]="scanner?.devices?.value" [(ngModel)]="selectedDeviceId" placeholder="Seleccione"
-                class="w-full md:w-56" (onChange)="scanner?.playDevice(selectedDeviceId); change()" size="small" id="cameraSelect" />
-            
+            <label for="cameraSelect">Cámara: </label>
+            <select #select1 (change)="action.playDevice(select1.value)" class="border border-slate-400 p-1 px-4 text-sm text-slate-500 rounded-md bg-white">
+                <option [value]="null" selected>Seleccione el dispositivo</option>
+                <option *ngFor="let c of action.devices.value; let i = index" [value]="c.deviceId" [selected]="i == action.deviceIndexActive">{{c.label}}</option>
+            </select>
         </div>
 
         <div class="corner-borders m-2  ">
