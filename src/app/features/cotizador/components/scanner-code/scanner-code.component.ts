@@ -118,12 +118,16 @@ export class ScannerCodeComponent implements OnInit  {
 
   // Cambiar de cámara
   onChangeCamera(): void {
-    // this.selectedDeviceId = this.selectedDeviceId;
-    // this.scanner.start({ deviceId: { exact: deviceId } });
+    
+    this.scanner?.stop();
 
-    this.scanner?.playDevice(this.selectedDeviceId);
+    setTimeout( () => {
+      this.scanner?.playDevice(this.selectedDeviceId);
+      500
+    });
     console.log(this.selectedDeviceId)
 
+    this.scanner?.start();
   }
   
 

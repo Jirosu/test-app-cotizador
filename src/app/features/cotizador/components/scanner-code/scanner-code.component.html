@@ -9,7 +9,7 @@
         <div class="flex flex-wrap gap-2 mt-2 items-center" [ngClass]="{ hidden : scanner?.isLoading}">
             <label for="cameraSelect">Seleccione el dispositivo: </label>
             <p-select [options]="cameras" [(ngModel)]="selectedDeviceId" placeholder="Seleccione"
-                class="w-full md:w-56" (change)="onChangeCamera()" size="small" id="cameraSelect" />
+                class="w-full md:w-56" (onChange)="onChangeCamera()" size="small" id="cameraSelect" />
         </div>
 
         <div class="corner-borders m-2  ">
