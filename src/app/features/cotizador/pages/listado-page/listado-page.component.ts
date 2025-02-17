@@ -105,7 +105,8 @@ export class ListadoPageComponent implements OnInit {
   }
 
   deleteCotizacion() {
-    this._cotizacionesService.deleteCotizacion(this.selectedCotizacion!);
+    // this._cotizacionesService.deleteCotizacion(this.selectedCotizacion!);
+    this._cotizacionesService.deleteCotizacionFromLocalStorage(this.selectedCotizacion!);
 
     this.getCotizaciones();
   }

@@ -9,6 +9,8 @@ import { CartService } from '../cart/cart.service';
 export class CotizacionService implements OnInit {
 
   private cotizaciones: Cotizacion[] = [];  
+
+  private cotizacionesFromLocalStorage: Cotizacion[] = [];
   
 
   constructor( private _cartService: CartService ) {
@@ -102,13 +104,145 @@ export class CotizacionService implements OnInit {
     ];
     
    }
+  // ngOnInit(): void {    
+  // }
+
+  // get cotizacionesList() {
+  //   const cotizacionesFromStorage = this.getCotizacionesFromLocalStorage();
+
+  //   return [...this.cotizaciones, ...cotizacionesFromStorage];
+  // }
+  
+  // getNewId() {
+  //   let lastId: string = this.cotizacionesList[this.cotizacionesList.length -1].id;
+  //   let splitId: string[] = lastId.split('-');
+
+  //   return splitId[0] + '-' + (parseInt(splitId[1]) + 1);
+  // }
+
+  // getCotizacionesFromLocalStorage() {
+  //   const objetos = [];
+
+  //   for (let i = 0; i < localStorage.length; i++) {
+  //     const clave = localStorage.key(i);
+  //     const valor = localStorage.getItem(clave!);
+    
+  //     try {
+  //       const objeto = JSON.parse(valor!);
+  //       objetos.push(objeto);
+  //     } catch (e) {
+  //       console.error(`Error al obtener los datos almacenados.`, e);
+  //     }
+  //   }
+
+  //   return objetos;    
+  // }
+
+  // // POST
+  // sendToDynamics(cotizacion: Cotizacion) {
+  //   const date = new Date();
+  //   this.removeCotizacionFromLocalStorage(cotizacion.id);
+
+  //   const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
+    
+  //   cotizacion.id = cotizacion.id || this.getNewId();
+  //   cotizacion.fecha = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDay()}`;
+  //   cotizacion.productos = this._cartService.cotizacionProductsCart;
+  //   cotizacion.estado = 'Completado';
+    
+  //   // cotizacion guardada storage
+  //   if (index === -1) {
+  //     this.cotizaciones.push(cotizacion);
+      
+  //     return;    
+  //   }
+    
+  //   // cotizacion ya enviada al Dynamic (edita la cotizacion existente)
+  //   this.cotizaciones[index].id = cotizacion.id || this.getNewId();
+  //   this.cotizaciones[index].cliente = cotizacion.cliente;
+  //   this.cotizaciones[index].docCliente = cotizacion.docCliente;
+  //   this.cotizaciones[index].productos = this._cartService.cotizacionProductsCart;
+  //   this.cotizaciones[index].monto = cotizacion.monto;
+  //   this.cotizaciones[index].estado = cotizacion.estado;
+ 
+  // }
+  
+  // // PUT
+  // updateInDynamics(cotizacion: Cotizacion) {
+  //   const date = new Date();
+  //   this.removeCotizacionFromLocalStorage(cotizacion.id);
+
+  //   const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
+    
+  //   cotizacion.id = cotizacion.id || this.getNewId();
+  //   cotizacion.fecha = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDay()}`;
+  //   cotizacion.productos = this._cartService.cotizacionProductsCart;
+  //   cotizacion.estado = 'Completado';
+    
+  //   // cotizacion guardada storage
+  //   if (index === -1) {
+  //     this.cotizaciones.push(cotizacion);
+      
+  //     return;    
+  //   }
+    
+  //   // cotizacion ya enviada al Dynamic (edita la cotizacion existente)
+  //   this.cotizaciones[index].id = cotizacion.id || this.getNewId();
+  //   this.cotizaciones[index].cliente = cotizacion.cliente;
+  //   this.cotizaciones[index].docCliente = cotizacion.docCliente;
+  //   this.cotizaciones[index].productos = this._cartService.cotizacionProductsCart;
+  //   this.cotizaciones[index].monto = cotizacion.monto;
+  //   this.cotizaciones[index].estado = cotizacion.estado;
+ 
+  // }
+
+  // saveCotizacionInLocalStorage(cotizacion: Cotizacion) {
+  //   if(cotizacion.estado === 'Completado') {
+  //     return;
+  //   }
+
+  //   const date = new Date();
+
+  //   const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
+    
+  //   // nueva cotizacion (guarda storage)
+  //   if (index === -1) {
+  //     cotizacion.id = cotizacion.id || this.getNewId();
+  //     cotizacion.fecha = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDay()}`;
+  //     cotizacion.productos = this._cartService.cotizacionProductsCart;
+  //     cotizacion.estado = 'Pendiente';      
+      
+  //     localStorage.setItem(cotizacion.id, JSON.stringify(cotizacion));
+  //     return;
+  //   }
+
+  //   // cotizacion ya enviada al Dynamic (edita la cotizacion existente)
+  //   this.cotizaciones[index].cliente = cotizacion.cliente;
+  //   this.cotizaciones[index].docCliente = cotizacion.docCliente;
+  //   this.cotizaciones[index].productos = this._cartService.cotizacionProductsCart;
+  //   this.cotizaciones[index].monto = cotizacion.monto;        
+  // }
+
+  // deleteCotizacion(cotizacion: Cotizacion) {
+  //   if(cotizacion.estado != 'Pendiente') {    
+  //     return;
+  //   }
+
+  //   this.removeCotizacionFromLocalStorage(cotizacion.id);
+  // }
+
+  // removeCotizacionFromLocalStorage(id: string) {
+  //   localStorage.removeItem(id);
+  // }
+
   ngOnInit(): void {    
   }
 
+  // TODO: editado
   get cotizacionesList() {
-    const cotizacionesFromStorage = this.getCotizacionesFromLocalStorage();
+    this.getCotizacionesFromLocalStorage();
 
-    return [...this.cotizaciones, ...cotizacionesFromStorage];
+    return [...this.cotizaciones, ...this.cotizacionesFromLocalStorage];
   }
   
   getNewId() {
@@ -118,28 +252,37 @@ export class CotizacionService implements OnInit {
     return splitId[0] + '-' + (parseInt(splitId[1]) + 1);
   }
 
+  // TODO: modificado reemplazar todo
   getCotizacionesFromLocalStorage() {
-    const objetos = [];
+    // const objetos = [];
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const clave = localStorage.key(i);
-      const valor = localStorage.getItem(clave!);
+    // for (let i = 0; i < localStorage.length; i++) {
+    //   const clave = localStorage.key(i);
+    //   const valor = localStorage.getItem(clave!);
     
-      try {
-        const objeto = JSON.parse(valor!);
-        objetos.push(objeto);
-      } catch (e) {
-        console.error(`Error al obtener los datos almacenados.`, e);
-      }
-    }
+    //   try {
+    //     const objeto = JSON.parse(valor!);
+    //     objetos.push(objeto);
+    //   } catch (e) {
+    //     console.error(`Error al obtener los datos almacenados.`, e);
+    //   }
+    // }
 
-    return objetos;    
+    // return objetos;    
+    const storage = localStorage.getItem('backup-data');
+    if(storage) {
+      this.cotizacionesFromLocalStorage =  JSON.parse(storage);
+      return;
+    }
+    this.cotizacionesFromLocalStorage = [];
   }
 
+  // TODO: 
   // POST
   sendToDynamics(cotizacion: Cotizacion) {
     const date = new Date();
-    this.removeCotizacionFromLocalStorage(cotizacion.id);
+    // this.removeCotizacionFromLocalStorage(cotizacion.id);
+    this.deleteCotizacionFromLocalStorage(cotizacion);
 
     const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
     
@@ -168,7 +311,8 @@ export class CotizacionService implements OnInit {
   // PUT
   updateInDynamics(cotizacion: Cotizacion) {
     const date = new Date();
-    this.removeCotizacionFromLocalStorage(cotizacion.id);
+    // this.removeCotizacionFromLocalStorage(cotizacion.id);
+    this.deleteCotizacionFromLocalStorage(cotizacion);
 
     const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
     
@@ -194,6 +338,7 @@ export class CotizacionService implements OnInit {
  
   }
 
+  // TODO: editado
   saveCotizacionInLocalStorage(cotizacion: Cotizacion) {
     if(cotizacion.estado === 'Completado') {
       return;
@@ -201,7 +346,8 @@ export class CotizacionService implements OnInit {
 
     const date = new Date();
 
-    const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
+    // const index = this.cotizaciones.findIndex( cot => cot.id === cotizacion.id);
+    const index = this.cotizacionesFromLocalStorage.findIndex( cot => cot.id === cotizacion.id);
     
     // nueva cotizacion (guarda storage)
     if (index === -1) {
@@ -209,28 +355,47 @@ export class CotizacionService implements OnInit {
       cotizacion.fecha = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDay()}`;
       cotizacion.productos = this._cartService.cotizacionProductsCart;
       cotizacion.estado = 'Pendiente';      
-      
-      localStorage.setItem(cotizacion.id, JSON.stringify(cotizacion));
+        
+      this.cotizacionesFromLocalStorage.push(cotizacion);
+
+      this.saveInLocalStorage('backup-data', this.cotizacionesFromLocalStorage);
+      // localStorage.setItem('backup-data', JSON.stringify(this.cotizacionesFromLocalStorage));
+
+
+      // localStorage.setItem(cotizacion.id, JSON.stringify(cotizacion));
       return;
     }
-
-    // cotizacion ya enviada al Dynamic (edita la cotizacion existente)
-    this.cotizaciones[index].cliente = cotizacion.cliente;
-    this.cotizaciones[index].docCliente = cotizacion.docCliente;
-    this.cotizaciones[index].productos = this._cartService.cotizacionProductsCart;
-    this.cotizaciones[index].monto = cotizacion.monto;        
+   
+    this.cotizacionesFromLocalStorage[index].cliente = cotizacion.cliente;
+    this.cotizacionesFromLocalStorage[index].docCliente = cotizacion.docCliente;
+    this.cotizacionesFromLocalStorage[index].productos = this._cartService.cotizacionProductsCart;
+    this.cotizacionesFromLocalStorage[index].monto = cotizacion.monto;        
+    
+    this.saveInLocalStorage('backup-data', this.cotizacionesFromLocalStorage);
   }
 
-  deleteCotizacion(cotizacion: Cotizacion) {
+  // TODO: editado
+  saveInLocalStorage(key: string, value: any) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  // TODO: editado
+  deleteCotizacionFromLocalStorage(cotizacion: Cotizacion) {
+    // console.log(this.cotizacionesFromLocalStorage);
+    
     if(cotizacion.estado != 'Pendiente') {    
       return;
     }
 
-    this.removeCotizacionFromLocalStorage(cotizacion.id);
+    const updatedCotizaciones = this.cotizacionesFromLocalStorage.filter( cot => cot.id !== cotizacion.id );
+    this.saveInLocalStorage('backup-data', updatedCotizaciones);
+    // console.log({updatedCotizaciones});
+    
+    // this.removeCotizacionFromLocalStorage(cotizacion.id);
   }
 
-  removeCotizacionFromLocalStorage(id: string) {
-    localStorage.removeItem(id);
-  }
+  // removeCotizacionFromLocalStorage(id: string) {
+  //   localStorage.removeItem(id);
+  // }
 
 }
