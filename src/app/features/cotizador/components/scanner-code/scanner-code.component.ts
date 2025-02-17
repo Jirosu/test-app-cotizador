@@ -79,7 +79,7 @@ export class ScannerCodeComponent implements OnInit, AfterViewInit  {
 
   ngAfterViewInit(): void {
     this.scanner?.isReady.subscribe((res: any) => {
-      // this.handle(this.action, 'start');
+      this.handle(this.scanner, 'start');
     });
   }
 
