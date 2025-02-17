@@ -192,4 +192,8 @@ export class ScannerCodeComponent implements OnInit  {
     }
   }
 
+  change() {
+    console.log('camera selected:', this.selectedDeviceId)
+  }
+
 }
