@@ -73,9 +73,8 @@ export class ScannerCodeComponent implements OnInit  {
    ) {}
 
   ngOnInit(): void {
-    this.loadCameras();
     this.getProducts();
-    console.log(this.scanner?.deviceIndexActive)
+    this.getSavedDivice();
   }
 
   getProducts() {
@@ -99,62 +98,22 @@ export class ScannerCodeComponent implements OnInit  {
     return this.products.find(prod => prod.code === code);
   }
 
-  loadCameras() {
-    try {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-       this.cameras = devices.filter(device => device.kind === 'videoinput');
-       if (this.cameras.length > 0) {
-         this.selectedDeviceId = this.cameras[0].deviceId;
-       }
-     });
-    } catch (error) {
-      console.error('Error al cargar las cámaras:', error);      
+
+  getSavedDivice() {
+    const cameraId = localStorage.getItem('scanner-divice');
+
+    if(cameraId === null) {
+      return;
     }
 
-    console.log(this.selectedDeviceId);
-    console.log(this.cameras);
-    
+    this.setDiviceCamera(cameraId);
   }
 
-  // Cambiar de cámara
-  onChangeCamera(): void {
-    
-    this.scanner?.stop();
-
-    setTimeout( () => {
-      this.scanner?.playDevice(this.selectedDeviceId);
-      500
-    });
-    console.log(this.selectedDeviceId)
-
-    this.scanner?.start();
+  setDiviceCamera(cameraId: string) {    
+    this.scanner?.playDevice(cameraId);
+    localStorage.setItem('scanner-divice', cameraId);
   }
-  
 
-  // onValueScanned(codeValue: ScannerQRCodeResult[]) {
-
-  //   if(codeValue[0].value.length === 0) {    
-  //     return;
-  //   }
-
-  //   if(codeValue[0].value === this.lastScannedValue) {
-  //     return;
-  //   }
-    
-  //   this.lastScannedValue = codeValue[0].value;    
-
-  //   this.onScannedProduct.emit(this.searchScannedProduct(codeValue[0].value));
-
-  //   this.messageServ.add({
-  //     severity: 'success',
-  //     summary: 'Producto escaneado',
-  //     detail: 'Se agregó el producto a la cotización',
-  //     key: 'toast-scanner',
-  //     life: 2500
-  //   });
-
-
-  // }
 
   onValueScanned(codeValue: ScannerQRCodeResult[]) {
 
@@ -190,10 +149,6 @@ export class ScannerCodeComponent implements OnInit  {
         life: 2500
       });
     }
-  }
-
-  change() {
-    console.log('camera selected:', this.selectedDeviceId)
   }
 
 }
