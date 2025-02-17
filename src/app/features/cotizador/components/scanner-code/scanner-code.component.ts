@@ -78,9 +78,9 @@ export class ScannerCodeComponent implements OnInit, AfterViewInit  {
   }
 
   ngAfterViewInit(): void {
-    this.scanner?.isReady.subscribe((res: any) => {
-      this.handle(this.scanner, 'start');
-    });
+  //   this.scanner?.isReady.subscribe((res: any) => {
+  //     this.handle(this.scanner, 'start');
+  //   });
   }
 
   public handle(action: any, fn: string): void {
@@ -112,7 +112,8 @@ export class ScannerCodeComponent implements OnInit, AfterViewInit  {
    
       return;
     }
-    this.scanner?.start();
+    // this.scanner?.start();
+    this.handle(this.scanner, 'start');
   }
 
   searchScannedProduct(code: string) {
