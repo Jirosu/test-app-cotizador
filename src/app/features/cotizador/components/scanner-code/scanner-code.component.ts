@@ -33,7 +33,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
   templateUrl: './scanner-code.component.html',
   styleUrl: './scanner-code.component.css'
 })
-export class ScannerCodeComponent implements OnInit, AfterViewInit  {
+export class ScannerCodeComponent implements OnInit {
   
   modalVisibiliy: boolean = false;
 
@@ -74,17 +74,22 @@ export class ScannerCodeComponent implements OnInit, AfterViewInit  {
 
   ngOnInit(): void {
     this.getProducts();
-    // this.getSavedDivice();
-  }
 
-  ngAfterViewInit(): void {
-  //   this.scanner?.isReady.subscribe((res: any) => {
-  //     this.handle(this.scanner, 'start');
-  //   });
+
+    this.checkCameraPermission().then(hasPermission => {
+      if (!hasPermission) {
+        this.messageServ.add({
+          severity: 'warn',
+          summary: 'Permisos de cámara',
+          detail: 'Se requieren permisos de acceso a la cámara para utlizar el escaner.',
+          key: 'toast-scanner',
+          life: 5000
+        });
+      }
+    });
   }
 
   public handle(action: any, fn: string): void {
-    // Fix issue #27, #29
     const playDeviceFacingBack = (devices: any[]) => {
       // front camera or back camera check here!
       const device = devices.find(f => (/back|rear|environment/gi.test(f.label))); // Default Back Facing Camera
@@ -98,44 +103,61 @@ export class ScannerCodeComponent implements OnInit, AfterViewInit  {
     }
   }
 
+  async checkCameraPermission(): Promise<boolean> {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch (err) {
+      console.error('Error al verificar los permisos de la cámara:', err);
+      return false;
+    }
+  }
+
+
+  async changeModalVisibiliy() {
+    if (!this.modalVisibiliy) {
+      const hasPermission = await this.checkCameraPermission();
+      if (!hasPermission) {
+        this.showPermissionInstructions();
+        return;
+      }
+    }
+  
+    this.modalVisibiliy = !this.modalVisibiliy;
+    this.lastScannedValue = undefined;
+    if (!this.modalVisibiliy) {
+      this.scanner?.stop();
+      return;
+    }
+    this.handle(this.scanner, 'start');
+  }
+
+
+  showPermissionInstructions() {
+    this.messageServ.add({
+      severity: 'error',
+      summary: 'Permisos de cámara denegados',
+      detail: 'Para usar el escaner, necesita habilitar los permisos de cámara en la configuración de su navegador.',
+      key: 'toast-scanner',
+      life: 10000,
+      sticky: true,
+      closable: true
+    });
+  }
+
+
+
   getProducts() {
     this._productService.getProducts().subscribe( resp => {
       this.products = resp.data.result;
     })
   }
 
-  changeModalVisibiliy() {
-    this.modalVisibiliy = !this.modalVisibiliy;
-    this.lastScannedValue = undefined;
-    if(!this.modalVisibiliy) {
-      this.scanner?.stop();
-   
-      return;
-    }
-    // this.scanner?.start();
-    this.handle(this.scanner, 'start');
-  }
 
   searchScannedProduct(code: string) {
     return this.products.find(prod => prod.code === code);
   }
-
-
-  // getSavedDivice() {
-  //   const cameraId = localStorage.getItem('scanner-divice');
-
-  //   if(cameraId === null) {
-  //     return;
-  //   }
-
-  //   this.setDiviceCamera(cameraId);
-  // }
-
-  // setDiviceCamera(cameraId: string) {    
-  //   this.scanner?.playDevice(cameraId);
-  //   localStorage.setItem('scanner-divice', cameraId);
-  // }
-
 
   onValueScanned(codeValue: ScannerQRCodeResult[]) {
 
