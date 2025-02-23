@@ -3,9 +3,7 @@ export interface Product {
     description: string;
     unitPrice: number;
     stock: number;
-}
-
-export interface ProductCart extends Product {
-    cantidad: number,
-    monto: number,
+    // 
+    quantity?: number;
+    amount?: number;
 }

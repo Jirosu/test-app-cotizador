@@ -1,0 +1,23 @@
+<div class="inline-flex flex-col rounded-lg border bg-white shadow-sm w-">
+    <button
+      class="rounded-none rounded-t-lg border hover:bg-gray-200 h-8 border-zinc-200"
+      (click)="increment()"
+    >
+        <span class="pi pi-plus"></span>
+    </button>
+    <input
+      type="number"
+      [(ngModel)]="value"      
+      (keypress)="validateOnlyNumbers($event)"
+      (blur)="validateOnBlur()"
+      class="h-8 w-12 border text-center appearance-none border-zinc-200"
+      />
+    <button
+      class="rounded-none rounded-b-lg border hover:bg-gray-200 h-8 border-zinc-200"
+      (click)="decrement()"
+      [disabled]="value === 1"
+      [ngClass]="{'disabled': value === 1}"
+    >
+      <span class="pi pi-minus"></span>
+    </button>
+</div>

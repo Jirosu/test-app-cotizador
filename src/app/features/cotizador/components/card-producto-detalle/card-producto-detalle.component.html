@@ -1,26 +1,26 @@
 <p-card >
     <div class=" ">
         <div class="grid grid-cols-12 gap-4 items-center ">
-            <div class="col-span-3 lg:col-span-2 flex items-center justify-center">
+            <!-- <div class="col-span-3 lg:col-span-2 flex items-center justify-center">
                 <img
                     [src]="'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'"
                     [alt]="product.description"
                     class="w-32 rounded "
                 />
-            </div>
+            </div> -->
 
-            <div class="col-span-9 lg:col-span-10 grid grid-cols-12 gap-2 items-center">
+            <div class="col-span-12 lg:col-span-10 grid grid-cols-12 gap-2 items-center">
                 <div class="col-span-6">
                     <div class="mb-2">
-                        <p class="text-wrap mr-3">{{product.description}}</p>
-                        <p class="text-sm mr-3">{{product.code}}</p>
+                        <p class="text-wrap mr-3 font-semibold text-lg">{{product.descProduct}}</p>
+                        <p class="text-sm mr-3">{{product.noProduct}}</p>
                     </div>    
                 </div>
 
                 
                 <div class="col-span-6 flex flex-col w-full text-right " >
-                    <p>{{product.cantidad}} und</p>
-                    <p class="font-semibold">{{product.monto | currency: 'S/ '}}</p>                    
+                    <p>{{product.quantity}} und</p>
+                    <p class="font-semibold">{{product.amount | currency: 'S/ '}}</p>                    
                 </div>
             </div>
             

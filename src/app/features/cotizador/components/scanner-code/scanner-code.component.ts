@@ -42,13 +42,6 @@ export class ScannerCodeComponent implements OnInit {
       video: {
         width: window.innerWidth
       }
-      // video: {
-        // width: { min: 640, ideal: 1920 },
-        // height: { min: 360, ideal: 1080 },
-        // width: { min: 350, ideal: 350 },
-        // height: { min: 200, ideal: 200 },
-        // aspectRatio: { ideal: 1.7777777778 },
-      // },
     },
     isBeep: false,
     vibrate: 300,
@@ -105,8 +98,9 @@ export class ScannerCodeComponent implements OnInit {
   }
 
 
-  async changeModalVisibiliy() {
-    if (!this.modalVisibiliy) {
+  async changeModalVisibiliy(visible: boolean) {
+    // if (!this.modalVisibiliy) {
+    if (visible) {
       const hasPermission = await this.checkCameraPermission();
       if (!hasPermission) {
         this.messageServ.add({
@@ -122,9 +116,11 @@ export class ScannerCodeComponent implements OnInit {
       }
     }
   
-    this.modalVisibiliy = !this.modalVisibiliy;
+    // this.modalVisibiliy = !this.modalVisibiliy;
+    this.modalVisibiliy = visible;
     this.lastScannedValue = undefined;
-    if (!this.modalVisibiliy) {
+    // if (!this.modalVisibiliy) {
+    if (!visible) {
       this.scanner?.stop();
       return;
     }

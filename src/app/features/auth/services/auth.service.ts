@@ -2,8 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { ReqLogin } from '../../../core/models/req-login.interface';
 import { API } from '../../../core/constants/API';
-import { Response } from '../../../core/models/response.interface';
-import { catchError, tap, throwError } from 'rxjs';
+import { Response, ResponseWithData, ResponseWithDataCount } from '../../../core/models/response.interface';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { TokenClaim, UserNameClaim } from '../../../core/models/token-claim.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,6 @@ export class AuthService {
 
   login(user: ReqLogin) {          
     const url: string = `${API.url}/auth/login`;
-    // return this._http.post<HttpResponse<any>>(url, user, { withCredentials: true, responseType: 'text' as 'json' });
     return this._http.post<HttpResponse<any>>(url, user, { withCredentials: true, observe: 'response', responseType: 'text' as 'json' })
   }  
 
@@ -24,8 +24,22 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    const url: string = `${API.url}/auth/is-logged-in`;
-    return this._http.post<Response>(url, null, { withCredentials: true });
+    const url: string = `${API.url}/auth/is-logged`;
+    return this._http.get<Response>(url, { withCredentials: true });
+  }
+
+  getClaimsUsername(): Observable<UserNameClaim> {
+    const url: string = `${API.url}/auth/claims`;
+    return this._http.get<ResponseWithData<TokenClaim[]>>(url, { withCredentials: true }).pipe(
+      map( resp => resp.data ),
+      map( data => data.find( claim => claim.type === 'username' ) ),
+      map( userNameClaim => {
+        return {
+          type: userNameClaim?.type,
+          value: userNameClaim?.value
+        }
+      })
+    )
   }
 
 }

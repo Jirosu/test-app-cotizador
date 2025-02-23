@@ -93,17 +93,17 @@ export class LoginComponent {
     // );
 
     this.messageServ.add({
-        severity: 'success',
-        summary: 'Inicio de sesión exitoso.',
-        detail: 'Bienvenido',
-        key: 'toast-login',
-        life: 5000
-      });
+      severity: 'success',
+      summary: 'Inicio de sesión exitoso.',
+      detail: `LOGIN NO VALIDADO, GUARDS DESACTIVADOS EN ROUTER`,
+      key: 'toast-login',
+      life: 5000
+    });
 
-      setTimeout(() => {
-        this._router.navigate(['/cotizador']);
-        this.loginLoading = false;
-      }, 1500)
+    setTimeout(() => {
+      this._router.navigate(['/cotizador']);
+      this.loginLoading = false;
+    }, 1500)
   }
 
 }

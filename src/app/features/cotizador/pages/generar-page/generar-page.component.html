@@ -1,21 +1,43 @@
+@if (loadingFetchData) {
+    <div class="fixed w-full h-full top-0 left-0 right-0 bottom-0 z-[60] bg-black opacity-40 flex items-center justify-center">
+        <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
+    </div>
+}
 
-<div class="container h-dvh flex flex-col mx-auto p-4">
-    <shared-navbar></shared-navbar>
+
+<!-- <div class="container h-dvh flex flex-col mx-auto p-4"> -->
+<shared-navbar></shared-navbar>
+
+<div class="container vh-screen-navbar flex flex-col mx-auto p-4">
     
-    <h1 class="text-2xl text-center mb-4">{{cotizacion.estado !== 'Completado' ? 'Generar cotización' : 'Editar cotización'}} </h1>
-        
+     <div class="mb-4 flex gap-2     flex-wrap justify-center font-semibold">
+         <!-- <div > -->
+             
+             <!-- <h1 class="text-xl md:text-2xl ">{{editMode ? 'Editar cotización: ' + cotizacion.no : 'Generar nueva cotización' }} </h1> -->
+         <!-- </div> -->
+         @if(cotizacion.status === cotizacionStatus.Devuelto || cotizacion.status === cotizacionStatus.Pendiente) {
+            <div class="flex gap-2">                
+                <h1 class="text-xl md:text-2xl ">Cotización: {{cotizacion.no}}</h1>
+                <p-tag [severity]="getStatusSeverity(cotizacion.status)" [value]="cotizacionStatus[cotizacion.status]" />
+            </div>
+        }
+        @else {
+            <h1 class="text-xl text-center md:text-2xl ">Generar nueva cotización</h1>            
+         }
+     </div>
     
-    <div class="flex flex-col gap-4">
-        <div class="grid md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-3">
+        <div class="grid md:grid-cols-2 gap-3">
             <div class="">            
                 <p-floatlabel variant="on">
                     <input 
                         pInputText
                         minlength="8"
                         maxlength="11"
-                        [(ngModel)]="cotizacion.docCliente"
+                        [(ngModel)]="cotizacion.noClient"
                         inputmode="numeric"                        
                         (keypress)="validateDocCliente($event)"
+                        (ngModelChange)="getClientDataMigo()"
                         id="numDocCli"
                         class="w-full"
                         pSize="small"
@@ -30,7 +52,8 @@
                         id="nomCli"
                         pInputText 
                         [disabled]="false"                        
-                        [(ngModel)]="cotizacion.cliente" 
+                        [(ngModel)]="cotizacion.clientName" 
+                        (ngModelChange)="onNameChange()"
                         class="w-full"
                         pSize="small"
                     />              
@@ -38,23 +61,34 @@
                 </p-floatlabel>
             </div>            
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="w-full">
 
-            <shared-search-bar (onSelectedProduct)="onSelectProduct($event)"></shared-search-bar>
+            <shared-search-bar (onSelectedProduct)="onSelectProduct($event)" [checkedPrecioMenor]="precioPorMenor" ></shared-search-bar>
 
+        </div>
+        <div class="flex items-center text-gray-500 font-semibold">
+            <p-checkbox 
+                [(ngModel)]="precioPorMenor" 
+                [binary]="true" 
+                inputId="chkPrecioPorMenor"
+                (ngModelChange)="onPrecioPorMenorChange()"
+            />  
+            <label for="chkPrecioPorMenor" class="ml-2">Precio por menor</label>
         </div>                        
     </div>
 
-    <hr class="my-4">
+    <hr class="my-2">
     
-    <div class="flex flex-col flex-grow overflow-hidden">
-        <div class="flex-grow overflow-y-auto">
+    <div class="flex flex-col flex-grow overflow-hidden ">
+        <div class="flex-grow overflow-y-auto ">
             @if (cotizacionCartProducts.length > 0) {
-                <p class="font-semibold text-lg mb-2">Productos agregados</p>
-                <div class="space-y-2 flex flex-col gap-2">
+                <p class="font-semibold text-lg ">Productos agregados</p>
+                <div class="space-y-2 flex flex-col gap-2 ">
                     @for (product of cotizacionCartProducts; track $index) {
                         <cotizador-card-producto 
-                            [product]="product">
+                            [product]="product"
+                            (onProductChange)="onProductChange()"
+                            >
                         </cotizador-card-producto>
                     }
                 </div>
@@ -67,7 +101,7 @@
         </div>
     </div>
                 
-    <div class="mt-auto p-4 bg-white">
+    <div class="mt-1  bg-white">
         <hr class="mb-2">
         <div class="text-end text-lg flex justify-between my-2">            
             <p>{{cotizacionCartProducts.length}} {{cotizacionCartProducts.length | i18nPlural:productsPluralMap }}</p>
@@ -86,18 +120,33 @@
                 label="Guardar"
                 styleClass="w-full"
                 severity="info"
-                (onClick)="saveToLocalStorageCotizacion()">
+                (onClick)="saveToLocalStorageCotizacion()"
+                [loading]="loadingBtnSave"
+            >
             </p-button>
 
-            <div class="w-full col-span-2">
-                @if(cotizacion.estado !== 'Completado') {
+            <p-button 
+                icon="pi pi-trash"
+                [disabled]="isFormInvalid().deleteBtn"
+                label="Eliminar"
+                styleClass="w-full"
+                severity="danger"
+                (onClick)="confirmationModal($event)"
+                [loading]="loadingBtnDelete"
+                >
+            </p-button>
+
+            <div class="w-full ">
+                @if(cotizacion.status !== cotizacionStatus.Devuelto) {
                     <p-button 
                         icon="pi pi-send"
                         [disabled]="isFormInvalid().sendBtn"
                         label="Lanzar"
                         styleClass="w-full"
                         severity="success"
-                        (onClick)="sendToDynamics()">
+                        (onClick)="sendToDynamics()"
+                        [loading]="loadingBtnSend"
+                        >
                     </p-button>
                 }
                 @else {
@@ -107,7 +156,9 @@
                         label="Editar en Dynamic"
                         styleClass="w-full"
                         severity="success"
-                        (onClick)="updateInDynamics()">
+                        (onClick)="updateInDynamics()"
+                        [loading]="loadingBtnSend"
+                        >
                     </p-button>
                 }
             </div>
@@ -117,3 +168,4 @@
 </div>
 
 <p-toast position="bottom-center" key="toast-generate-cotizacion"/>
+<p-confirmdialog />
