@@ -9,7 +9,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
-import { catchError, map, of } from 'rxjs';
+import { catchError, EMPTY, map, of } from 'rxjs';
 
 @Component({
   selector: 'shared-navbar',
@@ -61,12 +61,13 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.visible = false;
     this._authService.logout()
-    // .pipe(      
-    //   catchError((err) => {
-    //       this._router.navigateByUrl('/');
-    //       return of(false);
-    //   })
-    // )  
+    .pipe(      
+      catchError((err) => {
+        console.error('Error al cerrar sesión:', err);
+        this._router.navigateByUrl('/'); // Si hay error, redirige inmediatamente
+        return EMPTY;
+      })
+    )  
     .subscribe( response => {
       
       this.messageServ.add({
