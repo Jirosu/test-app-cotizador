@@ -1,0 +1,1 @@
+import"./chunk-4CLCTAJ7.js";var t=[{path:"listado",loadComponent:()=>import("./chunk-N3M7GUNW.js").then(o=>o.ListadoPageComponent),title:"Listado de cotizaciones | GlobalTec"},{path:"generar",loadComponent:()=>import("./chunk-G2N2LNHD.js").then(o=>o.GenerarPageComponent),title:"Generar cotizaciones | GlobalTec"},{path:"**",redirectTo:"listado"}];export{t as routes};
