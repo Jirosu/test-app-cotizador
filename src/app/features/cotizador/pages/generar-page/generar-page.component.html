@@ -5,16 +5,11 @@
 }
 
 
-<!-- <div class="container h-dvh flex flex-col mx-auto p-4"> -->
 <shared-navbar></shared-navbar>
 
 <div class="container vh-screen-navbar flex flex-col mx-auto p-4">
     
-     <div class="mb-4 flex gap-2     flex-wrap justify-center font-semibold">
-         <!-- <div > -->
-             
-             <!-- <h1 class="text-xl md:text-2xl ">{{editMode ? 'Editar cotización: ' + cotizacion.no : 'Generar nueva cotización' }} </h1> -->
-         <!-- </div> -->
+     <div class="mb-4 flex gap-2 flex-wrap justify-center font-semibold">
          @if(cotizacion.status === cotizacionStatus.Devuelto || cotizacion.status === cotizacionStatus.Pendiente) {
             <div class="flex gap-2">                
                 <h1 class="text-xl md:text-2xl ">Cotización: {{cotizacion.no}}</h1>
@@ -110,9 +105,9 @@
         <hr class="mb-4">
 
         <div class="grid grid-cols-2 gap-2">
-            <scanner-code
+            <!-- <scanner-code
                 (onScannedProduct)="onProductScanned($event)">
-            </scanner-code>
+            </scanner-code> -->
 
             <p-button 
                 icon="pi pi-save"

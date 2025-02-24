@@ -18,130 +18,7 @@ export class CotizacionService{
   constructor( 
     private _http: HttpClient,
     private _cartService: CartService
-   ) {
-    // this.cotizaciones = [
-    //   {
-    //     id: 'COT-1',
-    //     docCliente: '12345678970',
-    //     cliente: 'Cliente 1',
-    //     monto: 3100.00,
-    //     fecha: '2025-02-13',
-    //     estado: 'Completado',
-    //     precioPorMenor: false,
-    //     notaVenta: false,
-    //     productos: [
-    //       {
-    //         code: '0378-24/25',
-    //         description: "Apple MacBook Pro 16-inch M1 Max",
-    //         unitPrice: 1500.00,
-    //         stock: 1,
-    //         cantidad: 1,
-    //         monto: 1500.00
-    //       },
-    //       {
-    //         code: 'QQ-6067',
-    //         description: "Samsung Galaxy S21 Ultra 5G",
-    //         unitPrice: 800.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 1600.00
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     id: 'COT-2',
-    //     docCliente: '98765412301',
-    //     cliente: 'Cliente 2',
-    //     monto: 2300.00,
-    //     fecha: '2025-02-13',
-    //     estado: 'Completado',
-    //     precioPorMenor: false,
-    //     notaVenta: false,
-    //     productos: [
-    //       {
-    //         code: 'TA-2016',
-    //         description: "Microsoft Surface Pro 8",
-    //         unitPrice: 600.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 1200.00
-    //       },
-    //       {
-    //         code: '2838',
-    //         description: "Bose Noise Cancelling Headphones 700",
-    //         unitPrice: 200.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 400.00
-    //       },
-    //       {
-    //         code: '123-439/42',
-    //         description: "Apple Watch Series 8",
-    //         unitPrice: 300.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 600.00
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     id: 'COT-20',
-    //     docCliente: '12345678',
-    //     cliente: 'Cliente 20',
-    //     monto: 3100.00,
-    //     fecha: '2025-02-13',
-    //     estado: 'Completado',
-    //     precioPorMenor: false,
-    //     notaVenta: false,
-    //     productos: [
-    //       {
-    //         code: '0378-24/25',
-    //         description: "Apple MacBook Pro 16-inch M1 Max",
-    //         unitPrice: 1500.00,
-    //         stock: 1,
-    //         cantidad: 1,
-    //         monto: 1500.00
-    //       },
-    //       {
-    //         code: 'QQ-6067',
-    //         description: "Samsung Galaxy S21 Ultra 5G",
-    //         unitPrice: 800.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 1600.00
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     id: 'COT-4',
-    //     docCliente: '12345678970',
-    //     cliente: 'Cliente 1',
-    //     monto: 3100.00,
-    //     fecha: '2025-02-13',
-    //     estado: 'Devuelto',
-    //     precioPorMenor: false,
-    //     notaVenta: false,
-    //     productos: [
-    //       {
-    //         code: '0378-24/25',
-    //         description: "Apple MacBook Pro 16-inch M1 Max",
-    //         unitPrice: 1500.00,
-    //         stock: 1,
-    //         cantidad: 1,
-    //         monto: 1500.00
-    //       },
-    //       {
-    //         code: 'QQ-6067',
-    //         description: "Samsung Galaxy S21 Ultra 5G",
-    //         unitPrice: 800.00,
-    //         stock: 1,
-    //         cantidad: 2,
-    //         monto: 1600.00
-    //       }
-    //     ]
-    //   },
-    // ];
-   }
+   ) {}
  
 
   // API
@@ -470,6 +347,8 @@ export class CotizacionService{
   }
 
   saveCotizacionInLocalStorage(cotizacion: RespQuotationsDto) {
+    this.getCotizacionesFromLocalStorage();
+    
     if(cotizacion.status === CotizacionStatus.Devuelto) {
       return;
     }
@@ -499,39 +378,11 @@ export class CotizacionService{
 
   saveInLocalStorage(key: string, value: any) {
     localStorage.setItem(key, JSON.stringify(value));
-
-    // this.getLocalStorageSize();
-    // this.calcularTamañoLocalStorage();
   }
  
   deleteCotizacionFromLocalStorage(noCotizacion: string) {    
     const updatedCotizaciones = this.cotizacionesFromLocalStorage.filter( cot => cot.no !== noCotizacion );
     this.saveInLocalStorage('backup-data-local', updatedCotizaciones);
-  }
-
-
-  calcularTamañoLocalStorage() {
-    let total = 0;
-    
-    for (let i = 0; i < localStorage.length; i++) {
-      const clave:string = localStorage.key(i) || ''; // Obtener la clave del elemento
-      const valor: string = localStorage.getItem(clave) || ''; // Obtener el valor del elemento
-      
-      total += (clave.length + valor.length); // Sumar el tamaño de la clave y el valor
-    }
-  
-    console.log('Tamaño total de localStorage (en bytes):', total);
-    return total;
-  }
-
-  getLocalStorageSize() {
-    let total = 0;
-    for (let item in localStorage) {
-      if (localStorage.hasOwnProperty(item)) {
-        total += (localStorage[item].length + item.length) * 2;
-      }
-    }
-    console.log('Tamaño del LocalStorage: ' + total + ' bytes');
-  }
+  }  
 
 }
