@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -33,9 +33,10 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
   templateUrl: './scanner-code.component.html',
   styleUrl: './scanner-code.component.css'
 })
-export class ScannerCodeComponent implements OnInit {
+export class ScannerCodeComponent implements OnInit, OnDestroy {
   
-  modalVisibiliy: boolean = false;
+  // modalVisibiliy: boolean = false;
+  modalVisibiliy: boolean = true;
 
   scannerConfig: ScannerQRCodeConfig = {
     constraints: {
@@ -57,6 +58,9 @@ export class ScannerCodeComponent implements OnInit {
   @Output()
   public onScannedProduct: EventEmitter<Product> = new EventEmitter();
 
+  @Output()
+  onCloseScannerModal: EventEmitter<void> = new EventEmitter();
+
   @ViewChild(NgxScannerQrcodeComponent)
   scanner?: NgxScannerQrcodeComponent;
     
@@ -66,10 +70,23 @@ export class ScannerCodeComponent implements OnInit {
   constructor( 
     private messageServ: MessageService,
     private _productService: ProductService
-   ) {}
+   ) {}  
 
   ngOnInit(): void {
+    // TODO:
+    this.initScanner();
+
+
     this.getProducts();
+
+  }
+
+  // TODO:
+  ngOnDestroy(): void {
+    this.scanner?.stop();
+
+    console.log('scanner onDestroy');
+    
   }
 
   public handle(action: any, fn: string): void {
@@ -95,6 +112,35 @@ export class ScannerCodeComponent implements OnInit {
       console.error('Error al verificar los permisos de la cámara:', err);
       return false;
     }
+  }
+
+  // TODO:
+  async initScanner() {
+    if (this.modalVisibiliy) {
+      const hasPermission = await this.checkCameraPermission();
+      if (!hasPermission) {
+        this.messageServ.add({
+          severity: 'error',
+          summary: 'Permisos de cámara denegados',
+          detail: 'Para usar el escaner, necesita habilitar los permisos de cámara en la configuración de su navegador.',
+          key: 'toast-scanner',
+          life: 10000,
+          sticky: true,
+          closable: true
+        });
+        return;
+      }
+    }
+  
+    // this.modalVisibiliy = !this.modalVisibiliy;
+    // this.modalVisibiliy = visible;
+    this.lastScannedValue = undefined;
+    // if (!this.modalVisibiliy) {
+    // if (!this.modalVisibiliy) {
+    //   this.scanner?.stop();
+    //   return;
+    // }
+    this.handle(this.scanner, 'start');
   }
 
 
@@ -125,6 +171,16 @@ export class ScannerCodeComponent implements OnInit {
       return;
     }
     this.handle(this.scanner, 'start');
+  }
+
+  // TODO:
+  onCloseModal() {
+    this.modalVisibiliy = true;
+
+    console.log('onClose modal');
+
+    this.onCloseScannerModal.emit();
+    
   }
 
   getProducts() {

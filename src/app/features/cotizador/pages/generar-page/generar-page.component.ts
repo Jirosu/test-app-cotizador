@@ -64,6 +64,7 @@ export class GenerarPageComponent implements OnInit, OnDestroy {
   filteredProducts: any[] = [];
   precioPorMenor: boolean = false;
   // editMode: boolean = false;
+  scannerVisibility: boolean = false;
 
   loadingBtnDelete: boolean = false;
   loadingBtnSave: boolean = false;
@@ -164,8 +165,7 @@ export class GenerarPageComponent implements OnInit, OnDestroy {
     // const cotizacionId = this.getCotizacionIdFromState();
     const cotizacionId: string | null = history.state?.cotizacionId || null;
 
-    console.log({cotizacionId});
-    
+    // console.log({cotizacionId});    
 
     if (!cotizacionId) {
         this.loadingFetchData = false;
@@ -497,6 +497,12 @@ export class GenerarPageComponent implements OnInit, OnDestroy {
     }
 
     this.addProductToCart(product);
+  }
+
+  // TODO:
+  onCloseScannerModal() {
+    console.log('onCloseScannerModal event recive');
+    
   }
 
   onProductChange() {

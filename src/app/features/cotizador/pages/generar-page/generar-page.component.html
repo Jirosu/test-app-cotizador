@@ -105,9 +105,9 @@
         <hr class="mb-4">
 
         <div class="grid grid-cols-2 gap-2">
-            <!-- <scanner-code
-                (onScannedProduct)="onProductScanned($event)">
-            </scanner-code> -->
+
+            <p-button icon="pi pi-barcode" label="Escanear" (onClick)="scannerVisibility = true" styleClass="w-full" />
+            
 
             <p-button 
                 icon="pi pi-save"
@@ -164,3 +164,11 @@
 
 <p-toast position="bottom-center" key="toast-generate-cotizacion"/>
 <p-confirmdialog />
+
+@if(scannerVisibility) {
+    <scanner-code
+        (onScannedProduct)="onProductScanned($event)"
+        (onCloseScannerModal)="scannerVisibility = false"
+    >
+    </scanner-code>
+}
