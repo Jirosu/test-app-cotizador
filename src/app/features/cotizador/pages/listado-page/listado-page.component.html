@@ -50,9 +50,8 @@
             
         <p-table 
             [value]="cotizaciones" 
-            [tableStyle]="{ 'min-width': '30rem' }"
+            [tableStyle]="{ 'min-width': '26rem' }"
             [loading]="loadingTable"
-
             
             selectionMode="single"
             [(selection)]="selectedCotizacion" 
@@ -64,7 +63,6 @@
             [scrollable]="true" 
             [scrollHeight]="'flex'"            
             >
-            <!-- [tableStyle]="{'min-width': '40rem'}" -->
             <ng-template #header>
                 <tr>
                     <th pSortableColumn="no" style="width:27%">
@@ -98,31 +96,10 @@
                 </tr>
             </ng-template>
 
-            <ng-template #expandedrow let-cotizacion>
+            <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="6">
-                        <div class="flex justify-center items-center gap-4">
-                            <p-button 
-                                icon="pi pi-save"
-                                label="Editar"
-                                styleClass="w-full"
-                                severity="info"
-                                (onClick)="navigateToEditPage()"
-                                >
-                            </p-button>
-        
-                            <p-button 
-                                icon="pi pi-trash"                
-                                label="Eliminar"
-                                styleClass="w-full"
-                                severity="danger"
-                                (onClick)="confirmationModal($event)"
-                                >
-                            </p-button>
-                        </div>    
-                    </td>
-                </tr>                
-                                
+                    <td colspan="3" class="text-center">No se encontraron datos.</td>
+                </tr>
             </ng-template>
     
         </p-table>

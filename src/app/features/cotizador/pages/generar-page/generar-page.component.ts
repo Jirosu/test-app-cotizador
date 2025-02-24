@@ -499,36 +499,17 @@ export class GenerarPageComponent implements OnInit, OnDestroy {
     this.addProductToCart(product);
   }
 
-  // TODO:
-  onCloseScannerModal() {
-    console.log('onCloseScannerModal event recive');
-    
-  }
-
   onProductChange() {
     this.saveCotizacionInLocalStorage();
   }
 
   // auto save
-  saveCotizacionInLocalStorage() {
-    // this.loadingBtnSave = true;
+  saveCotizacionInLocalStorage() {    
 
     this.cotizacion.totalPrice = this.getTotalCartAmount();
-    // this.cotizacion.igv = this.getCartIGV();
 
     this._cotizacionesService.saveCotizacionInLocalStorage(this.cotizacion);
-    
-    // this.clearFormAndCart();
-    // this.editMode = false;
-    // this.loadingBtnSave = false;
-
-    // this.messageService.add({
-    //   severity: 'info',
-    //   summary: 'Cotización guardada',
-    //   detail: 'Se guardó la cotización exitosamente.',
-    //   key: 'toast-generate-cotizacion',
-    //   life: 2500
-    // });    
+     
   }
 
 

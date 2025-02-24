@@ -14,6 +14,7 @@ import { SelectModule } from 'primeng/select';
 
 // ngx-scanner-qrcode
 import { NgxScannerQrcodeModule, LOAD_WASM, ScannerQRCodeResult, NgxScannerQrcodeComponent, ScannerQRCodeConfig } from 'ngx-scanner-qrcode';
+import { Subject, takeUntil } from 'rxjs';
 LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
 
 @Component({
@@ -34,7 +35,7 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
   styleUrl: './scanner-code.component.css'
 })
 export class ScannerCodeComponent implements OnInit, OnDestroy {
-  
+  private destroy$ = new Subject<void>(); // Subject para desuscribirse automáticamente
   // modalVisibiliy: boolean = false;
   modalVisibiliy: boolean = true;
 
@@ -45,7 +46,7 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
       }
     },
     isBeep: false,
-    vibrate: 300,
+    // vibrate: 300,
   };
 
 
@@ -73,20 +74,16 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
    ) {}  
 
   ngOnInit(): void {
-    // TODO:
     this.initScanner();
 
-
     this.getProducts();
-
   }
 
-  // TODO:
   ngOnDestroy(): void {
     this.scanner?.stop();
 
-    console.log('scanner onDestroy');
-    
+    this.destroy$.next(); // Emitimos el evento para desuscribirnos
+    this.destroy$.complete();
   }
 
   public handle(action: any, fn: string): void {
@@ -96,10 +93,20 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
       action.playDevice(device ? device.deviceId : devices[0].deviceId);
     }
 
+    // if (fn === 'start') {
+    //   action[fn](playDeviceFacingBack).subscribe((r: any) => console.log(fn, r), alert);
+    // } else {
+    //   action[fn]().subscribe((r: any) => console.log(fn, r), alert);
+    // }
+
     if (fn === 'start') {
-      action[fn](playDeviceFacingBack).subscribe((r: any) => console.log(fn, r), alert);
+      action[fn](playDeviceFacingBack)
+        .pipe(takeUntil(this.destroy$)) // Se desuscribe cuando `destroy$` emite un valor
+        .subscribe((r: any) => console.log(fn, r), alert);
     } else {
-      action[fn]().subscribe((r: any) => console.log(fn, r), alert);
+      action[fn]()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((r: any) => console.log(fn, r), alert);
     }
   }
 
@@ -114,7 +121,6 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO:
   async initScanner() {
     if (this.modalVisibiliy) {
       const hasPermission = await this.checkCameraPermission();
@@ -131,15 +137,9 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
         return;
       }
     }
-  
-    // this.modalVisibiliy = !this.modalVisibiliy;
-    // this.modalVisibiliy = visible;
+
     this.lastScannedValue = undefined;
-    // if (!this.modalVisibiliy) {
-    // if (!this.modalVisibiliy) {
-    //   this.scanner?.stop();
-    //   return;
-    // }
+
     this.handle(this.scanner, 'start');
   }
 
@@ -162,10 +162,9 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
       }
     }
   
-    // this.modalVisibiliy = !this.modalVisibiliy;
     this.modalVisibiliy = visible;
     this.lastScannedValue = undefined;
-    // if (!this.modalVisibiliy) {
+
     if (!visible) {
       this.scanner?.stop();
       return;
@@ -173,14 +172,10 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
     this.handle(this.scanner, 'start');
   }
 
-  // TODO:
   onCloseModal() {
     this.modalVisibiliy = true;
 
-    console.log('onClose modal');
-
     this.onCloseScannerModal.emit();
-    
   }
 
   getProducts() {
