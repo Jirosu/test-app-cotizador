@@ -51,59 +51,69 @@ export class LoginComponent {
     if (!this.validateForm()) return;
 
     this.loginLoading = true;
-    // this._authServ.login(this.user).pipe(
-    //   catchError((err) => {
-    //     if (err.status === 401) {
-    //       this.messageServ.add({
-    //         severity: 'error',
-    //         summary: 'Credenciales incorrectas.',
-    //         detail: 'El usuario y/o la contraseña son incorrectos.',
-    //         key: 'toast-login',
-    //         life: 2500
-    //       });
-    //     } else {
-    //       this.messageServ.add({
-    //         severity: 'error',
-    //         summary: 'Error al iniciar sesión.',
-    //         detail: `${err.error.message}`,
-    //         key: 'toast-login',
-    //         life: 2500
-    //       });
-    //     }
-    //     console.error(err);
-    //     this.loginLoading = false;
-    //     return EMPTY;
-    //   })
-    // ).subscribe(response => {
-    //   if (response.status === 200) {
-    //     this.messageServ.add({
-    //       severity: 'success',
-    //       summary: 'Inicio de sesión exitoso.',
-    //       detail: `${response.body}`,
-    //       key: 'toast-login',
-    //       life: 5000
-    //     });
+    this._authServ.login(this.user).pipe(
+      catchError((err) => {
+        if (err.status === 401) {
+          this.messageServ.add({
+            severity: 'error',
+            summary: 'Credenciales incorrectas.',
+            detail: 'El usuario y/o la contraseña son incorrectos.',
+            key: 'toast-login',
+            life: 2500
+          });
 
-    //     setTimeout(() => {
-    //       this._router.navigate(['/cotizador']);
-    //       this.loginLoading = false;
-    //     }, 1500)
-    //   }
-    // }
-    // );
+          this.user = {
+            username: '',
+            password: '',
+          }
+        } else {
+          this.messageServ.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Se produjo un error al intentar iniciar sesión.',
+            key: 'toast-login',
+            life: 2500
+          });
 
-    this.messageServ.add({
-        severity: 'success',
-        summary: 'Inicio de sesión exitoso.',
-        detail: 'Bienvenido',
-        key: 'toast-login',
-        life: 5000
-      });
-
-      setTimeout(() => {
-        this._router.navigate(['/cotizador']);
+          this.user = {
+            username: '',
+            password: '',
+          }
+        }
+        console.error(err);
         this.loginLoading = false;
-      }, 1500)
+        return EMPTY;
+      })
+    ).subscribe(response => {
+      if (response.status === 200) {
+        this.messageServ.add({
+          severity: 'success',
+          summary: 'Inicio de sesión exitoso.',
+          detail: `${response.body}`,
+          key: 'toast-login',
+          life: 5000
+        });
+
+        setTimeout(() => {
+          this._router.navigate(['/cotizador']);
+          this.loginLoading = false;
+        }, 1500)
+      }
+    }
+    );
+
+    // this.messageServ.add({
+    //   severity: 'success',
+    //   summary: 'Inicio de sesión exitoso.',
+    //   detail: `LOGIN NO VALIDADO, GUARDS DESACTIVADOS EN ROUTER`,
+    //   key: 'toast-login',
+    //   life: 5000
+    // });
+
+    // setTimeout(() => {
+    //   this._router.navigate(['/cotizador']);
+    //   this.loginLoading = false;
+    // }, 1500)
   }
 
 }

@@ -1,10 +1,14 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
-import { ProductService } from '../../../features/cotizador/services/product/product.service';
-import { FloatLabel } from 'primeng/floatlabel';
 import { CommonModule } from '@angular/common';
+
+import { ProductService } from '../../../features/cotizador/services/product/product.service';
 import { Product } from '../../../features/cotizador/models/product.interface';
+
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
 
 @Component({
   selector: 'shared-search-bar',
@@ -13,48 +17,56 @@ import { Product } from '../../../features/cotizador/models/product.interface';
     CommonModule,
     FormsModule,
     AutoComplete,
-    FloatLabel,
+    // FloatLabel,
+    InputIconModule,
+    IconFieldModule,
   ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })
 export class SearchBarComponent implements OnInit {
 
-  selectedProduct: any;
-  filteredProducts: any[] = [];
-  products: any[] | undefined;
+  @Input()
+  checkedPrecioMenor: boolean = false;
 
+  selectedProduct: Product | null = {} as Product;
+  filteredProducts: Product[] = [];
+
+  @Input()
+  products: Product[] = [];
+  
   @Output()
   onSelectedProduct: EventEmitter<Product> = new EventEmitter();
 
-  constructor(private _productService: ProductService) {}
-
-  ngOnInit(): void {
-    this.getProducts();
+  constructor() {}
+  
+  ngOnInit(): void {    
   }
 
-  getProducts() {
-     this._productService.getProducts().subscribe( resp => {
-      this.products = resp.data.result;
-    });
+
+  getIndexOfQuery(description: string, query: string) {
+    return description.toLowerCase().indexOf(query.toLowerCase());
   }
 
   filterProducts(event: AutoCompleteCompleteEvent) {
-      let filtered: any[] = [];
-      let query = event.query;
-  
-      for (let i = 0; i < (this.products as any[]).length; i++) {
-          let product = (this.products as any[])[i];
-          if (product.description.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-              filtered.push(product);
-          }
-      }    
-      this.filteredProducts = filtered;
+    let filtered: Product[] = [];
+    let query = event.query.toLowerCase();
+    let count = 0;
+ 
+    for (let i = 0; i < (this.products as Product[]).length; i++) {
+      let product = (this.products as Product[])[i];
+      if (product.description.toLowerCase().indexOf(query) !== -1 || product.code.toLowerCase().indexOf(query) !== -1) {
+        filtered.push(product);
+        count++;
+        if (count >= 10) break;
+      }
+    }
+    this.filteredProducts = filtered;
   }
 
-  onSelectProduct(event: any) {
-    this.onSelectedProduct.emit(event.value)
 
+  onSelectProduct(event: any) {
+    this.onSelectedProduct.emit(event.value);
     this.selectedProduct = null;
   }
 

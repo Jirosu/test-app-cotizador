@@ -5,8 +5,7 @@
   .qr-scanner-corner {
     position: absolute;
     width: 20%;
-    height: 20%;
-    /* height: 50%; */
+    height: 20%;    
     border: 2px solid #ff0000;
   }
   

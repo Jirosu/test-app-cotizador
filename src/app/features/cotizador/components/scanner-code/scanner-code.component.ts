@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,6 +14,7 @@ import { SelectModule } from 'primeng/select';
 
 // ngx-scanner-qrcode
 import { NgxScannerQrcodeModule, LOAD_WASM, ScannerQRCodeResult, NgxScannerQrcodeComponent, ScannerQRCodeConfig } from 'ngx-scanner-qrcode';
+import { Subject, takeUntil } from 'rxjs';
 LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
 
 @Component({
@@ -33,36 +34,34 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe();
   templateUrl: './scanner-code.component.html',
   styleUrl: './scanner-code.component.css'
 })
-export class ScannerCodeComponent implements OnInit {
-  
-  modalVisibiliy: boolean = false;
+export class ScannerCodeComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>(); // Subject para desuscribirse automáticamente
+  // modalVisibiliy: boolean = false;
+  modalVisibiliy: boolean = true;
 
   scannerConfig: ScannerQRCodeConfig = {
     constraints: {
       video: {
         width: window.innerWidth
       }
-      // video: {
-        // width: { min: 640, ideal: 1920 },
-        // height: { min: 360, ideal: 1080 },
-        // width: { min: 350, ideal: 350 },
-        // height: { min: 200, ideal: 200 },
-        // aspectRatio: { ideal: 1.7777777778 },
-      // },
     },
     isBeep: false,
-    vibrate: 300,
+    // vibrate: 300,
   };
 
 
   cameras: MediaDeviceInfo[] = [];
   selectedDeviceId: string = '';
 
+  @Input()
   products: Product[] = [];
 
 
   @Output()
   public onScannedProduct: EventEmitter<Product> = new EventEmitter();
+
+  @Output()
+  onCloseScannerModal: EventEmitter<void> = new EventEmitter();
 
   @ViewChild(NgxScannerQrcodeComponent)
   scanner?: NgxScannerQrcodeComponent;
@@ -72,11 +71,20 @@ export class ScannerCodeComponent implements OnInit {
 
   constructor( 
     private messageServ: MessageService,
-    private _productService: ProductService
-   ) {}
+    // private _productService: ProductService
+   ) {}  
 
   ngOnInit(): void {
-    this.getProducts();
+    this.initScanner();
+
+    // this.getProducts();
+  }
+
+  ngOnDestroy(): void {
+    this.scanner?.stop();
+
+    this.destroy$.next(); // Emitimos el evento para desuscribirnos
+    this.destroy$.complete();
   }
 
   public handle(action: any, fn: string): void {
@@ -86,10 +94,20 @@ export class ScannerCodeComponent implements OnInit {
       action.playDevice(device ? device.deviceId : devices[0].deviceId);
     }
 
+    // if (fn === 'start') {
+    //   action[fn](playDeviceFacingBack).subscribe((r: any) => console.log(fn, r), alert);
+    // } else {
+    //   action[fn]().subscribe((r: any) => console.log(fn, r), alert);
+    // }
+
     if (fn === 'start') {
-      action[fn](playDeviceFacingBack).subscribe((r: any) => console.log(fn, r), alert);
+      action[fn](playDeviceFacingBack)
+        .pipe(takeUntil(this.destroy$)) // Se desuscribe cuando `destroy$` emite un valor
+        .subscribe((r: any) => console.log(fn, r), alert);
     } else {
-      action[fn]().subscribe((r: any) => console.log(fn, r), alert);
+      action[fn]()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((r: any) => console.log(fn, r), alert);
     }
   }
 
@@ -104,9 +122,32 @@ export class ScannerCodeComponent implements OnInit {
     }
   }
 
+  async initScanner() {
+    if (this.modalVisibiliy) {
+      const hasPermission = await this.checkCameraPermission();
+      if (!hasPermission) {
+        this.messageServ.add({
+          severity: 'error',
+          summary: 'Permisos de cámara denegados',
+          detail: 'Para usar el escaner, necesita habilitar los permisos de cámara en la configuración de su navegador.',
+          key: 'toast-scanner',
+          life: 10000,
+          sticky: true,
+          closable: true
+        });
+        return;
+      }
+    }
 
-  async changeModalVisibiliy() {
-    if (!this.modalVisibiliy) {
+    this.lastScannedValue = undefined;
+
+    this.handle(this.scanner, 'start');
+  }
+
+
+  async changeModalVisibiliy(visible: boolean) {
+    // if (!this.modalVisibiliy) {
+    if (visible) {
       const hasPermission = await this.checkCameraPermission();
       if (!hasPermission) {
         this.messageServ.add({
@@ -122,24 +163,31 @@ export class ScannerCodeComponent implements OnInit {
       }
     }
   
-    this.modalVisibiliy = !this.modalVisibiliy;
+    this.modalVisibiliy = visible;
     this.lastScannedValue = undefined;
-    if (!this.modalVisibiliy) {
+
+    if (!visible) {
       this.scanner?.stop();
       return;
     }
     this.handle(this.scanner, 'start');
   }
 
-  getProducts() {
-    this._productService.getProducts().subscribe( resp => {
-      this.products = resp.data.result;
-    })
+  onCloseModal() {
+    this.modalVisibiliy = true;
+
+    this.onCloseScannerModal.emit();
   }
+
+  // getProducts() {
+  //   this._productService.getProducts().subscribe( resp => {
+  //     this.products = resp.data.result;
+  //   })
+  // }
 
 
   searchScannedProduct(code: string) {
-    return this.products.find(prod => prod.code === code);
+    return this.products.find(prod => prod.code.toLowerCase() === code.toLocaleLowerCase());
   }
 
   onValueScanned(codeValue: ScannerQRCodeResult[]) {
@@ -148,9 +196,9 @@ export class ScannerCodeComponent implements OnInit {
       return;
     }
 
-    if(codeValue[0].value === this.lastScannedValue) {
-      return;
-    }
+    // if(codeValue[0].value === this.lastScannedValue) {
+    //   return;
+    // }
            
     const product = this.searchScannedProduct(codeValue[0].value);
     if(product) {      
@@ -164,9 +212,11 @@ export class ScannerCodeComponent implements OnInit {
         key: 'toast-scanner',
         life: 2500
       });
+      
     }
     else {
       this.lastScannedValue = codeValue[0].value; 
+      this.onScannedProduct.emit(product);
       
       this.messageServ.add({
         severity: 'warn',
@@ -175,7 +225,9 @@ export class ScannerCodeComponent implements OnInit {
         key: 'toast-scanner',
         life: 2500
       });
+
     }
+    this.onCloseModal();
   }
 
 }

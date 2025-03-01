@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 
-import { ProductCart } from '../../models/product.interface';
-
 import { ButtonModule } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { RespQuotationDetailDto } from '../../models/cotizacion.interface';
+
 
 @Component({
   selector: 'cotizador-card-producto-detalle',
@@ -20,6 +20,6 @@ import { CommonModule } from '@angular/common';
 export class CardProductoDetalleComponent {
 
   @Input()
-  product: ProductCart = {} as ProductCart;
+  product: RespQuotationDetailDto = {} as RespQuotationDetailDto;
 
 }

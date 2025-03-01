@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Cotizacion } from '../../models/cotizacion.interface';
+import { CotizacionStatus, RespQuotationsDto } from '../../models/cotizacion.interface';
 import { CardProductoDetalleComponent } from '../card-producto-detalle/card-producto-detalle.component';
 
 import { TableModule } from 'primeng/table';
@@ -30,17 +30,21 @@ export class ModalDetalleComponent {
   onCloseModal: EventEmitter<boolean> = new EventEmitter();
 
   @Input()
-  cotizacion: Cotizacion = {
-      id: '0',
-      docCliente: '',
-      cliente: '',
-      monto: 0,
-      fecha: '',
-      estado: null,
-      productos: []
+  cotizacion: RespQuotationsDto = {
+      no: '',
+      noClient: '',
+      clientName: '',
+      igv: 0,
+      totalPrice: 0,
+      status: CotizacionStatus.null,
+      detail: []
     };  
 
   constructor() {}
+
+  getDetailsCount() {
+    return this.cotizacion?.detail.length > 0;
+  }
 
   closeModal() {
     this.visible = false;

@@ -7,18 +7,18 @@
 >
     <ng-template #header>
         <div class="  ">
-            <h2 class="text-xl font-bold">Detalle de cotización N° {{cotizacion.id}}</h2>
-            <p>{{cotizacion.fecha}}</p>
+            <h2 class="text-xl font-bold">Detalle de cotización N° {{cotizacion.no}}</h2>
         </div>
     </ng-template>
     
 
     <div class="flex flex-col flex-grow overflow-hidden">
         <div class="flex-grow overflow-y-auto">
-            @if (cotizacion.productos.length > 0) {
+            <!-- @if (cotizacion.detail.length > 0) { -->
+            @if (getDetailsCount()) {
                 <p class="font-semibold text-lg mb-2">Productos agregados</p>
                 <div class="space-y-2 flex flex-col gap-2">
-                    @for (product of cotizacion.productos; track $index) {
+                    @for (product of cotizacion.detail; track $index) {
                         <cotizador-card-producto-detalle
                             [product]="product"
                         >
@@ -36,8 +36,8 @@
 
      <ng-template #footer>
         <div class="grid grid-cols-2 w-full  mr-2">
-            <p>{{ cotizacion.productos.length }} productos en total.</p>
-            <p class="text-lg font-semibold text-end">Total {{ cotizacion.monto | currency: 'S/ '}}</p>
+            <p>{{ cotizacion.detail.length }} productos en total.</p>
+            <p class="text-lg font-semibold text-end">Total {{ cotizacion.totalPrice | currency: 'S/ '}}</p>
             <div class="col-start-2 text-end mt-1 ">
                 <p-button label="Cerrar" severity="secondary" (click)="closeModal()" />
             </div>

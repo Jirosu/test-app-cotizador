@@ -1,17 +1,36 @@
-<p-menubar>
+<p-menubar class="bg-sky-500 border-0 " styleClass="bg-sky-500 border-0" >
     <ng-template #start>
-        <img src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg" alt="logo" style="width: 60px;">
+        <!-- <div class="px-4 md:px-8">
+            <img src="/logo_globaltec_png.png" alt="logo_globalte" style="height: 70px;">
+        </div> -->
+        <div class="text-white text-lg font-semibold flex gap-4 items-center px-2">
+            <h1>
+                {{ title.title}}
+            </h1>
+            @if(title.isTagActive) {
+                <p-tag 
+                    [value]="title.tagLabel"
+                    [severity]="getStatusSeverity(title.severity)"
+                    styleClass="py-[1px]"                    
+                >
+                </p-tag>
+            }
+        </div>
     </ng-template>
 
     <ng-template #end>
-        <p-button (click)="visible = true" icon="pi pi-bars" variant="outlined" severity="contrast" styleClass="border-0 pb-4"/>
+        <div class="px-4 md:px-8">
+            <button (click)="visible = true" class="border-0 w-5 h-5 flex items-center justify-center rounded-lg text-white hover:text-zinc-300" >
+                <span class="pi pi-bars"></span>
+            </button>
+        </div>
     </ng-template>
 </p-menubar>
 
 
-<p-drawer  [(visible)]="visible" [header]="'user cod'" position="right">
+<p-drawer  [(visible)]="visible" [header]="'Bienvenido '+ getUserName()" position="right">
     <ng-template #content>
-        <div class="text-lg">
+        <div class="text-xl pb-3 mb-3 border-b border-zinc-300">
             <span class="font-medium">Cotizador</span>
         </div>
         <ul class="list-none p-0 m-0 overflow-hidden">
@@ -32,7 +51,7 @@
                 (click)="visible = false"
             >
                 <a pRipple class="flex items-center cursor-pointer p-4 rounded-border text-surface-700 hover:bg-surface-100 duration-150 transition-colors p-ripple">
-                    <i class="pi pi-pen-to-square mr-2"></i>
+                    <i class="pi pi-plus mr-2"></i>
                     <span class="font-medium">Generar</span>
                 </a>
             </li>
@@ -40,7 +59,7 @@
     </ng-template>
 
     <ng-template #footer>
-        <div (click)="logout()" class="border-t border-zinc-400">
+        <div (click)="logout()" class="border-t border-zinc-300">
             <a pRipple class="flex items-center cursor-pointer p-4 rounded-border text-red-600 hover:bg-surface-100 duration-150 transition-colors p-ripple">
                 <i class="pi pi-sign-out mr-2"></i>
                 <span class="font-medium">Cerrar Sesión</span>

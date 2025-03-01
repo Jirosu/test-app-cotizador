@@ -1,0 +1,17 @@
+<input 
+    type="text" 
+    name="hidden-input-barcode" 
+    id="hidden-input-barcode" 
+    style="position: absolute; left: -9999px;"
+    autocomplete="off"
+    #hiddenInputBarcode 
+    (input)="onInputChange($event)"
+    (blur)="onBlurHiddeninput()"
+    >
+
+<p-button 
+    icon="pi pi-barcode" 
+    [label]=buttonLabel 
+    (onClick)="scanProduct()"
+    styleClass="w-full h-full"                    
+/> 
