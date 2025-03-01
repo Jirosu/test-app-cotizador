@@ -17,14 +17,21 @@ import { IconFieldModule } from 'primeng/iconfield';
     CommonModule,
     FormsModule,
     AutoComplete,
+<<<<<<< HEAD
     // FloatLabel,
+=======
+    FloatLabel,
+>>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
     InputIconModule,
     IconFieldModule,
   ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent implements OnInit, OnChanges {
+
+  @Input()
+  checkedPrecioMenor: boolean = false;
 
   @Input()
   checkedPrecioMenor: boolean = false;
@@ -38,6 +45,7 @@ export class SearchBarComponent implements OnInit {
   @Output()
   onSelectedProduct: EventEmitter<Product> = new EventEmitter();
 
+<<<<<<< HEAD
   constructor() {}
   
   ngOnInit(): void {    
@@ -46,9 +54,37 @@ export class SearchBarComponent implements OnInit {
 
   getIndexOfQuery(description: string, query: string) {
     return description.toLowerCase().indexOf(query.toLowerCase());
+=======
+  constructor(private _productService: ProductService) {}
+  
+  ngOnInit(): void {
+    this.getProducts();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['checkedPrecioMenor'].currentValue) {
+      this.getProductsPorMenor();
+    }
+    else {
+      this.getProducts();
+    }
+  }
+
+  getProducts() {
+     this._productService.getProducts().subscribe( resp => {
+      this.products = resp.data.result;
+    });
+>>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
+  }
+
+  getProductsPorMenor() {
+    this._productService.increaseMinorPrice().subscribe( prods => {
+      this.products = prods;
+    });  
   }
 
   filterProducts(event: AutoCompleteCompleteEvent) {
+<<<<<<< HEAD
     let filtered: Product[] = [];
     let query = event.query.toLowerCase();
     let count = 0;
@@ -62,6 +98,18 @@ export class SearchBarComponent implements OnInit {
       }
     }
     this.filteredProducts = filtered;
+=======
+      let filtered: any[] = [];
+      let query = event.query;
+  
+      for (let i = 0; i < (this.products as any[]).length; i++) {
+          let product = (this.products as any[])[i];
+          if (product.description.toLowerCase().indexOf(query.toLowerCase()) == 0 || product.code.toLowerCase().indexOf(query.toLowerCase()) == 0 ) {
+              filtered.push(product);
+          }
+      }    
+      this.filteredProducts = filtered;
+>>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   }
 
 

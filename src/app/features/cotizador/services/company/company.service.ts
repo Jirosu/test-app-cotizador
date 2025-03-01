@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -6,6 +7,13 @@ import { ClientData } from '../../../../core/models/migo.interface';
 import { RespPlaceOfDispatchDto, RespPriceTypeDto, RespShippingLocationDto, RespTypeOfDeliveryDto } from '../../models/company.interface';
 import { ResponseWithData } from '../../../../core/models/response.interface';
 import { TariffPrice } from '../../models/tarifPrice.interface';
+=======
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { API } from '../../../../core/constants/API';
+import { ClientDataMigo } from '../../../../core/models/migo.interface';
+>>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +22,7 @@ export class CompanyService {
 
   constructor(private _http: HttpClient) { }
 
+<<<<<<< HEAD
   
   getCustomerInfo(numDoc: string) {
     const url = `${API.url}/company/customer/${numDoc}`;
@@ -54,4 +63,10 @@ export class CompanyService {
   }
 
 
+=======
+  getClientDataMigo(numDoc: string) {
+    const url = `${API.url}/company/migo/${numDoc}`;
+    return this._http.get<ClientDataMigo>(url, {withCredentials: true});
+  }
+>>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 }
