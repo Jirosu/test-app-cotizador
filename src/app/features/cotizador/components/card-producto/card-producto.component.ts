@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { QuotationDetailService } from '../../services/quotation-detail-service/quotation-detail-service.service';
 import { QuotationDetail, RespQuotationDetailDto } from '../../models/cotizacion.interface';
-=======
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
-import { CartService } from '../../services/cart/cart.service';
-import { RespQuotationDetailDto } from '../../models/cotizacion.interface';
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 import { QuantityInputComponent } from '../../../../shared/components/quantity-input/quantity-input.component';
 
 import { InputNumber } from 'primeng/inputnumber';
@@ -30,15 +22,10 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     InputNumber,
     ButtonModule,
-<<<<<<< HEAD
     QuantityInputComponent,
     CheckboxModule,
     InputTextModule,
     TooltipModule,
-=======
-    Card,
-    QuantityInputComponent,
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   ],
   providers: [ MessageService],
   templateUrl: './card-producto.component.html',
@@ -47,14 +34,7 @@ import { CommonModule } from '@angular/common';
 export class CardProductoComponent implements OnInit {
 
   @Input()
-<<<<<<< HEAD
   product: QuotationDetail = {} as QuotationDetail;
-=======
-  product: RespQuotationDetailDto = {} as RespQuotationDetailDto;
-
-  @Output()
-  onProductChange: EventEmitter<void> = new EventEmitter();
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 
   @Output()
   onProductChange: EventEmitter<void> = new EventEmitter();
@@ -72,11 +52,7 @@ export class CardProductoComponent implements OnInit {
   }
 
   removeProduct() {  
-<<<<<<< HEAD
     this._cartService.removeProductFromCard(this.product.productCode);
-=======
-    this._cartService.removeProductFromCard(this.product.noProduct);
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
     this.onProductChange.emit();
   }
 
@@ -89,7 +65,6 @@ export class CardProductoComponent implements OnInit {
     this.product.quantity = quantity;
 
     this.updateCartProduct();
-<<<<<<< HEAD
   }
 
   getCompanyTariffPrice() {
@@ -110,8 +85,6 @@ export class CardProductoComponent implements OnInit {
 
     this.updateCartProduct();
     this.onProductChange.emit();
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   }
 
 }

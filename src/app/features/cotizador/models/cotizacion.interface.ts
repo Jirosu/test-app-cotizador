@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { TariffPrice } from "./tarifPrice.interface";
 
 export enum CotizacionStatus {
@@ -22,30 +21,6 @@ export interface QuotationHeader {
 // }
 
 
-=======
-import { Product } from "./product.interface";
-
-export interface QuotationHeader {
-  no:         string;
-  noClient:   string;
-  clientName: string;
-  status?: CotizacionStatus;
-}
-
-export interface RespQuotationDetailDto {
-  noQuotation: string;
-  noProduct: string;
-  descProduct: string;
-  noLine: number;
-  quantity: number;
-  price: number;
-}
-
-
-export enum CotizacionStatus {
-  'Devuelto' , 'Pendiente' , null
-}
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 
 
 // GET all
@@ -62,21 +37,6 @@ export interface RespQuotationsDto {
 }
 
 
-<<<<<<< HEAD
-=======
-// export interface QuotationDetailDto {
-//   noQuotation?: string;
-//   noProduct: string;
-//   noLine?: number;
-//   quantity: number;
-//   price: number;
-//   // 
-//   descProduct?: string;
-//   amount?: number;
-//   stock?: number;
-// }
-
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 //GET by id
 export interface RespQuotationByIdDto {
   no: string;
@@ -99,7 +59,6 @@ export interface RespQuotationDetailDto {
   stock?: number;
 }
 
-<<<<<<< HEAD
 // TODO: reemplazar interfaces post, put y cart por esta
 // POST y PUT unificados
 export interface Quotation {
@@ -154,15 +113,6 @@ export interface GenerateQuotation_BL {
 
   //
   status?: CotizacionStatus;
-=======
-// POST - add
-export interface GenerateQuotation_BL {
-  clientDoc: string;
-  clientNames: string;
-  cart: CartProductGen[];
-  totalPrice?: number;
-  igv?: number;
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 }
 export interface CartProductGen {
   productCode: string;
@@ -178,7 +128,6 @@ export interface ModifyQuotation_BL {
   cart: CartProductMod[];
   igv?: number;
   totalPrice?: number;
-<<<<<<< HEAD
 
   // agregados sergio
   puntoEntrega: string;
@@ -188,8 +137,6 @@ export interface ModifyQuotation_BL {
   telefonoCliente: string;
   direCliente: string;
 
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 }
 export interface CartProductMod {
   noLine: number;

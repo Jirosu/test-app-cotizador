@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
-=======
-import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -75,28 +71,13 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
 
   constructor( 
     private messageServ: MessageService,
-<<<<<<< HEAD
     // private _productService: ProductService
-=======
-    private _productService: ProductService
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
    ) {}  
 
   ngOnInit(): void {
     this.initScanner();
 
-<<<<<<< HEAD
     // this.getProducts();
-  }
-
-  ngOnDestroy(): void {
-    this.scanner?.stop();
-
-    this.destroy$.next(); // Emitimos el evento para desuscribirnos
-    this.destroy$.complete();
-=======
-    this.getProducts();
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   }
 
   ngOnDestroy(): void {
@@ -196,15 +177,6 @@ export class ScannerCodeComponent implements OnInit, OnDestroy {
     this.modalVisibiliy = true;
 
     this.onCloseScannerModal.emit();
-<<<<<<< HEAD
-=======
-  }
-
-  getProducts() {
-    this._productService.getProducts().subscribe( resp => {
-      this.products = resp.data.result;
-    })
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   }
 
   // getProducts() {

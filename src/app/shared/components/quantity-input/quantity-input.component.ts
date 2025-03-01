@@ -17,12 +17,9 @@ export class QuantityInputComponent {
   @Input()
   value: number | null = null;
 
-<<<<<<< HEAD
   @Input()
   inputOrientation: 'vertical' | 'horizontal' = 'vertical';
 
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   @Output()
   onValueChange: EventEmitter<number> = new EventEmitter();
 

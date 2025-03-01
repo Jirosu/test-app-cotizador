@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Component, Input, OnInit } from '@angular/core';
-=======
-import { Component, OnInit } from '@angular/core';
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 import { Router, RouterModule } from '@angular/router';
 
 import { AuthService } from '../../../features/auth/services/auth.service';
@@ -14,10 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { catchError, EMPTY, map, of } from 'rxjs';
-<<<<<<< HEAD
 import { TagModule } from 'primeng/tag';
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 
 @Component({
   selector: 'shared-navbar',
@@ -39,7 +32,6 @@ export class NavbarComponent implements OnInit {
   visible: boolean = false;
   userNameClaim: UserNameClaim = {} as UserNameClaim;
 
-<<<<<<< HEAD
   @Input()
   title: {
     title: string,
@@ -53,8 +45,6 @@ export class NavbarComponent implements OnInit {
     severity: -1
   };
 
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
   constructor( 
     private messageServ: MessageService, 
     private _authService: AuthService, 
@@ -82,7 +72,6 @@ export class NavbarComponent implements OnInit {
     }
     return this.userNameClaim.value;
   }
-<<<<<<< HEAD
 
   getStatusSeverity(status: number ) {
     switch(status) {
@@ -94,8 +83,6 @@ export class NavbarComponent implements OnInit {
         return 'secondary';
     }
   }
-=======
->>>>>>> bf24bb8533adfc7851011deeb18cb5000d90c66b
 
   logout() {
     this.visible = false;
